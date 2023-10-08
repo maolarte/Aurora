@@ -1,0 +1,93 @@
+{
+  "services_dict": {
+    "1": "asesorialegal",
+    "2": "alimentacionynutricion",
+    "3": "saludprimerosauxiliosyatencionmedica",
+    "4": "aguapotable",
+    "5": "saneamiento",
+    "6": "higiene",
+    "8": "educacion",
+    "9": "alojamientotemporal",
+    "11": "acompañamientoayudapsicosocial",
+    "12": "transportehumanitario",
+    "13": "Otro",
+    "14": "serviciosdeproteccion",
+    "16": "restablecimientodecontactofamiliar",
+    "18": "transferencias"
+  },
+
+  "cuenta_con_dict": {
+    "1": "accesoaserviciodeinternet",
+    "2": "accesoaservicioelectrico",
+    "3": "areadecomedorescocina",
+    "4": "areaparadisposiciondebasuras",
+    "5": "areascomunes",
+    "6": "areasdelavanderia",
+    "7": "areasderegistrodelapoblacion",
+    "8": "ningunadelasanteriores"
+  },
+
+  "cual_serv1_dict": {
+    "1": "nnaapoyooayudapsicosocial",
+    "2": "nnagestiondecasos",
+    "3": "nnaentregadekits",
+    "4": "nnaalimentacionynutricion",
+    "5": "nnabanosexclusivosnna",
+    "6": "nnacuidadosalternativos",
+    "7": "nnaotro",
+    "8": "espaciosamigables",
+    "9": " "
+  },
+
+  "cual_ser_2_dict": {
+    "0": " ",
+    "1": "mujeresespaciosseguros",
+    "2": "mujeresduchasobanos",
+    "3": "mujeresgestiondecasosdeviolenciasbasadasengenero",
+    "4": "mujeresproductosdehigienemenstrual",
+    "5": "mujeresotro",
+    "6": "mujerescontrolesprenatales",
+    "7": "mujeresapoyonutricionalgestantesylactantes"
+  },
+  "registro_dict": {
+    "1": "archivofisico",
+    "2": "hojacalculo",
+    "3": "software",
+    "4": "otroalmacenarregistro",
+    "5": " "
+  },
+  "financ_dict": {
+    "1": "organismosorganizacionesinternacionales",
+    "2": "gobiernonacional",
+    "3": "empresasnacionales",
+    "4": "empresasinternacionales",
+    "5": "organismosnogubernamentaleslocalesonacionales",
+    "6": "sociedadcivil",
+    "7": "otrosfinanciamientos"
+  },
+  "reto_dict": {
+    "1": "conseguirlafinanciacionnecesaria",
+    "2": "mejorarlacalidaddelosserviciosofrecidos",
+    "3": "ampliarymejorarlacolaboracionconotrasentidades",
+    "4": "mejorarlavisibilidaddeltrabajorealizado",
+    "5": "medirycomunicarelimpactosocialdelosserviciosprestados",
+    "6": "comunicacionconlosusuarios",
+    "7": "otroreto"
+  },
+  "idio_dict": {
+    "1": "espanol",
+    "2": "ingles",
+    "3": "creole",
+    "4": "portugues",
+    "5": "otroidioma",
+    "6": "frances"
+  },
+  "medio_dict": {
+    "1": "caraacara",
+    "2": "folletos",
+    "3": "infografiaeninstalacionesdelpunto",
+    "4": "mediosaudiovisuales",
+    "5": "redessocialeseinternet",
+    "6": "otromedio"
+  }
+}

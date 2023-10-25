@@ -1,6 +1,7 @@
 {
-  "_coordenadas_latitude": "lat",
-  "_coordenadas_longitude": "long",
+  "_id": "id",
+  "_coordenadas_latitude": "latitude",
+  "_coordenadas_longitude": "longitude",
   "pais": "ubicacion",
   "punto_reporte": "lugar_enc",
   "ubicacion": "punto_ayud",

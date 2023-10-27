@@ -159,6 +159,9 @@ services = replaceOrganisation(
 services = replaceOrganisation(
     services, 'otra', 'organizacionprincipal', 'cualotraorganizacionprin')
 
+services = replaceOrganisation(
+    services, 'otra', 'organizacionpertence', 'cualotraorganizacionprin')
+
 
 # Fill  missing values of variables of attended separated children
 common = services['nnanoacompanados'].isnull()

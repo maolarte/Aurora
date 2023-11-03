@@ -84,11 +84,11 @@ def exportToFile(df: DataFrame, fileType: str, exportName: str):
     """
     if (fileType == "csv"):
         name = f"{exportName}.csv"
-        df.to_csv(name)
+        df.to_csv(name, index=False)
         print(f"data export to {name}")
     else:
         name = f"{exportName}.json"
-        df.to_json(name, orient="records")
+        df.to_json(name, orient="records", index=False)
         print(f"data export to {name}")
 
 
@@ -175,8 +175,6 @@ services['nnanoacompanados'] = np.select(
 services['nnaseparados'] = np.select(
     condition1, fill_with, default=services['nnaseparados'])
 
-# Fill  missing values
-services = services.fillna(defaultMissingValue)
 
 # rename variables
 newColumns = loadLocalJsonDoc("defaults/rename_columns.json")
@@ -280,4 +278,8 @@ services_carto["timeunix"] = services_carto["fecha"].apply(
     lambda x: toUnixTimestamp(time=x, format="%Y-%m-%d"))
 
 output_df = processMultValueColumns(services_carto, values)
+
+# Fill  missing values
+output_df = output_df.fillna(defaultMissingValue)
+
 exportToFile(output_df, "csv", output_path)

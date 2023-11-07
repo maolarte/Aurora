@@ -1,0 +1,14 @@
+{
+  "e08_pais_": {
+    "x": "long_paisn",
+    "y": "lat_paisna"
+  },
+  "e10_pais_": {
+    "x": "long_paisi",
+    "y": "lat_paisin"
+  },
+  "e12_pais_": {
+    "x": "long_paisv",
+    "y": "lat_paisvi"
+  }
+}

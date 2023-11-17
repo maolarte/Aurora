@@ -275,7 +275,7 @@ services_carto = capitaliseColumns(services_carto, _capitalise_columns)
 
 # parsing date field into unix timestamp
 services_carto["timeunix"] = services_carto["fecha"].apply(
-    lambda x: toUnixTimestamp(time=x, format="%Y-%m-%d"))
+    lambda x: toUnixTimestamp(time=x, format="%d/%m/%Y"))
 
 output_df = processMultValueColumns(services_carto, values)
 

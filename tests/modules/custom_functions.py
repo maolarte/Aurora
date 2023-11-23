@@ -218,15 +218,22 @@ def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]]
     return local_df
 
 
+# def processGeocodeData(data):
+#     features = data['features']
+#     for feature in features:
+#         id: str = feature['id']
+#         match = id.startswith("country")
+#         if (match):
+#             return (feature['properties']['short_code'], feature["place_name"])
+
+#     return "zz"
+
 def processGeocodeData(data):
     features = data['features']
+    output = []
     for feature in features:
-        id: str = feature['id']
-        match = id.startswith("country")
-        if (match):
-            return (feature['properties']['short_code'], feature["place_name"])
-
-    return "zz"
+        _id: str = feature['id']
+        id = _id.split(".")[0]
 
 
 def getMapboxGeocoder(token: str):

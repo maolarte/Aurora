@@ -1,4 +1,5 @@
 *.csv
 *.xlsx
+*.zip
 
 modules/__pycache__

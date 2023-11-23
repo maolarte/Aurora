@@ -31,3 +31,5 @@ new_df = addReverseGeocodedToDataFrame(
     df=df, lat_column="lat", lon_column="long", token=token, name="Test Data")
 
 print(new_df)
+
+new_df.to_csv("tests/test.csv")

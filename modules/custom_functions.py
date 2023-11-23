@@ -1,4 +1,4 @@
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, concat
 from copy import deepcopy
 from datetime import datetime
 import json
@@ -218,15 +218,25 @@ def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]]
     return local_df
 
 
+# def processGeocodeData(data):
+#     features = data['features']
+#     for feature in features:
+#         id: str = feature['id']
+#         match = id.startswith("country")
+#         if (match):
+#             return (feature['properties']['short_code'], feature["place_name"])
+
+#     return "zz"
+
 def processGeocodeData(data):
     features = data['features']
+    output = {}
     for feature in features:
-        id: str = feature['id']
-        match = id.startswith("country")
-        if (match):
-            return (feature['properties']['short_code'], feature["place_name"])
-
-    return "zz"
+        _id: str = feature['id']
+        id = _id.split(".")[0]
+        output[f"{id}_text"] = feature["text"]
+        output[f"{id}_place_name"] = feature["place_name"]
+    return output
 
 
 def getMapboxGeocoder(token: str):
@@ -247,22 +257,22 @@ def reverseGeocode(longitude: int, latitude: int, token: str):
 
 
 def processReverseGeoding(data: list[tuple[int, int]], token: str, name: str):
-    output = []
+    _output = []
     pbar = getProgressIndicator(
         data=data, desc=f"Processing Reverse Geocoding {name}", size=7, unit="coords")
     for lon, lat in data:
         try:
             result = reverseGeocode(lon, lat, token)
             _decoded = processGeocodeData(result)
-            output.append(_decoded)
+            _output.append(_decoded)
             pbar.update(1)
             sleep(0.1)
 
         except Exception as e:
             print(e)
-            output.append(("zz", ""))
+            _output.append([])
 
-    return output
+    return _output
 
 
 def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: str, token: str, name: str):
@@ -273,7 +283,8 @@ def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: st
     local_df = deepcopy(df)
     coordinates = list(zip(list(local_df[lon_column].astype(float).to_list()), list(
         local_df[lat_column].astype(float).to_list())))
-    reversed_geocoded_df = processReverseGeoding(coordinates, token, name)
-    local_df["country_code"] = [x[0] for x in reversed_geocoded_df]
-    local_df["country_name"] = [x[1] for x in reversed_geocoded_df]
-    return local_df
+    reversed_geocoded = processReverseGeoding(coordinates, token, name)
+    reversed_geocoded_df = DataFrame(reversed_geocoded)
+    output = concat([local_df, reversed_geocoded_df],
+                    axis=1).fillna(default_value)
+    return output

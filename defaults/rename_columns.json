@@ -2,7 +2,7 @@
   "_id": "id",
   "_coordenadas_latitude": "latitude",
   "_coordenadas_longitude": "longitude",
-  "pais": "ubicacion",
+  "pais": "country_name",
   "punto_reporte": "lugar_enc",
   "ubicacion": "punto_ayud",
   "cualotropunto": "punto_ayud_otro",

@@ -2,4 +2,6 @@
 *.xlsx
 *.zip
 
+secrets/
+
 modules/__pycache__

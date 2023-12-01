@@ -18,3 +18,5 @@ There are three main scripts for processing data for Carto
      - ayudaHumanitaria
      - caracterización
      - monitoreo
+
+The final procedure of script is to upload the processed data to Carto DataWarehouse.

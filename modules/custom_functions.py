@@ -1,6 +1,6 @@
 from pandas import DataFrame, Series, concat
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import re
 import geopandas as gpd
@@ -42,6 +42,36 @@ def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
     in_seconds = (target - start).total_seconds()
     in_milliseconds = int(in_seconds) * 1000
     return in_milliseconds
+
+
+def datetimetoUnixTimestamp(value: datetime):
+    start = datetime(1970, 1, 1).date()
+    target = value.date()
+    time_diff = target - start
+    in_seconds = time_diff.total_seconds()
+    in_milliseconds = int(in_seconds) * 1000
+    return in_milliseconds
+
+
+def toUnixTimestampMultiFormatted(time: str, formats: list[str]):
+
+    for format_str in formats:
+        try:
+            # Parse the date with the specified format
+            target = datetime.strptime(time, format_str)
+
+            # Convert the datetime to UTC if it doesn't have a timezone
+            if target.tzinfo is None:
+                target = target.replace(tzinfo=timezone.utc)
+
+            # Calculate the Unix timestamp in milliseconds
+            in_seconds = (target - datetime(1970, 1, 1,
+                                            tzinfo=timezone.utc)).total_seconds()
+            in_milliseconds = int(in_seconds) * 1000
+
+            return in_milliseconds
+        except ValueError:
+            continue
 
 
 def codifyServices(value: str, values_dict: dict[str, int], otherValue: str):
@@ -217,16 +247,6 @@ def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]]
 
     return local_df
 
-
-# def processGeocodeData(data):
-#     features = data['features']
-#     for feature in features:
-#         id: str = feature['id']
-#         match = id.startswith("country")
-#         if (match):
-#             return (feature['properties']['short_code'], feature["place_name"])
-
-#     return "zz"
 
 def processGeocodeData(data):
     features = data['features']

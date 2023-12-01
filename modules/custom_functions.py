@@ -1,4 +1,5 @@
 from pandas import DataFrame, Series, concat
+from geopandas import GeoDataFrame
 from copy import deepcopy
 from datetime import datetime, timezone
 import json
@@ -6,6 +7,7 @@ import re
 import geopandas as gpd
 from time import sleep
 from tqdm import tqdm
+from shapely.geometry import Point
 
 # Mapbox
 from mapbox import Geocoder
@@ -308,3 +310,11 @@ def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: st
     output = concat([local_df, reversed_geocoded_df],
                     axis=1).fillna(default_value)
     return output
+
+
+def dataFrameToGeoDataFrame(df: DataFrame, geometry_column_name: str, lat_column: str, long_column: str):
+    local_df = deepcopy(df)
+    local_df[geometry_column_name] = Point(
+        local_df[lat_column], local_df[long_column])
+    local_geo_df = GeoDataFrame(local_df)
+    return local_geo_df

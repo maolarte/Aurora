@@ -1,145 +1,156 @@
 import pandas as pd
 import numpy as np
+import os
 
-from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, exportToFile, processMultValueColumns, processValueReplacement, capitaliseColumns
+from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, exportToFile, processMultValueColumns, processValueReplacement, capitaliseColumns, addReverseGeocodedToDataFrame
 
 
 defaultMissingValue = 999999
 
-# Import dataset
-raw_data = input("raw_data_path: ")
-output_path = input("output_path: ")
 
-services = pd.read_csv(raw_data, sep=';', index_col=False)
+def main():
+    # Import dataset
+    raw_data = input("raw_data_path: ")
+    output_path = input("output_path: ")
 
-# Replace "other in organizations"
-services = replaceOrganisation(
-    services, 'otra', 'organizacionimplementadora', 'cualotraorganizacionimp')
+    services = pd.read_csv(raw_data, sep=';', index_col=False)
 
-services = replaceOrganisation(
-    services, 'otra', 'organizacionprincipal', 'cualotraorganizacionprin')
+    # Replace "other in organizations"
+    services = replaceOrganisation(
+        services, 'otra', 'organizacionimplementadora', 'cualotraorganizacionimp')
 
-services = replaceOrganisation(
-    services, 'otra', 'organizacionpertence', 'cualotraorganizacionprin')
+    services = replaceOrganisation(
+        services, 'otra', 'organizacionprincipal', 'cualotraorganizacionprin')
+
+    services = replaceOrganisation(
+        services, 'otra', 'organizacionpertence', 'cualotraorganizacionprin')
+
+    # Fill  missing values of variables of attended separated children
+    common = services['nnanoacompanados'].isnull()
+    common1 = services['nnaseparados'].isnull()
+    condition = [(services['numeronna'] == 0) & (common)]
+    condition1 = [(services['numeronna'] == 0) & (common)]
+    fill_with = ['no']
+
+    services['nnanoacompanados'] = np.select(
+        condition, fill_with, default=services['nnanoacompanados'])
+    services['nnaseparados'] = np.select(
+        condition1, fill_with, default=services['nnaseparados'])
+
+    # rename variables
+    newColumns = loadLocalJsonDoc("defaults/rename_columns.json")
+    services_carto = services.rename(columns=newColumns)
+
+    # serv_tipo (separating by pipe symbol and categorized with number)
+    codify_dict = loadLocalJsonDoc("defaults/codification_dict.json")
+    services_dict = codify_dict["services_dict"]
+
+    # re structure variable cuenta_con
+    cuenta_con_dict = codify_dict["cuenta_con_dict"]
+
+    # re structure variable children services (cual_serv1)
+    cual_serv1_dict = codify_dict["cual_serv1_dict"]
+
+    # re structure variable women services (cual_ser_2)
+    cual_ser_2_dict = codify_dict["cual_ser_2_dict"]
+
+    # re structure variable data storage (almacenamientoregistros)
+    registro_dict = codify_dict["registro_dict"]
+
+    # variable funding
+    financ_dict = codify_dict["financ_dict"]
+
+    #  variable challenges
+    reto_dict = codify_dict["reto_dict"]
+
+    # variable lenguages
+    idio_dict = codify_dict["idio_dict"]
+
+    # variable medios
+    medio_dict = codify_dict["medio_dict"]
+
+    values = [
+        {
+            "target_column": "serv_tipo",
+            "output_column": "serv_tipo1",
+            "values_dict": services_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "cuenta_con",
+            "output_column": "cuenta_c_1",
+            "values_dict": cuenta_con_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "cual_serv1",
+            "output_column": "cual_ser_1",
+            "values_dict": cual_serv1_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "cual_ser_2",
+            "output_column": "cual_ser_3",
+            "values_dict": cual_ser_2_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "almacenamientoregistros",
+            "output_column": "almacenamientoregistros_",
+            "values_dict": cual_ser_2_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "financiamiento",
+            "output_column": "financb",
+            "values_dict": financ_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "princ_reto",
+            "output_column": "princ_re_1",
+            "values_dict": reto_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "idioma_ent",
+            "output_column": "idioma_e_1",
+            "values_dict": idio_dict,
+            "other_value": defaultMissingValue
+        },
+        {
+            "target_column": "medios_bri",
+            "output_column": "medios_b_1",
+            "values_dict": medio_dict,
+            "other_value": defaultMissingValue
+        },
+    ]
+
+    replace_lib = loadLocalJsonDoc("defaults/value_replacements.json")
+    services_carto = processValueReplacement(services_carto, replace_lib)
+
+    _capitalise_columns = loadLocalJsonDoc(
+        filepath="defaults/column_capitalisation.json")
+
+    services_carto = capitaliseColumns(services_carto, _capitalise_columns)
+
+    # parsing date field into unix timestamp
+    services_carto["timeunix"] = services_carto["fecha"].apply(
+        lambda x: toUnixTimestamp(time=x, format="%d/%m/%Y"))
+
+    output_df = processMultValueColumns(services_carto, values)
+
+    token = os.environ.get("MAPBOX_TOKEN")
+
+    # add geo-administrative attributes
+    output_df = addReverseGeocodedToDataFrame(
+        output_df, lon_column="longitude", lat_column="latitude", token=token, name="Service data")
+
+    # Fill  missing values
+    output_df = output_df.fillna(defaultMissingValue)
+
+    exportToFile(output_df, "csv", output_path)
 
 
-# Fill  missing values of variables of attended separated children
-common = services['nnanoacompanados'].isnull()
-common1 = services['nnaseparados'].isnull()
-condition = [(services['numeronna'] == 0) & (common)]
-condition1 = [(services['numeronna'] == 0) & (common)]
-fill_with = ['no']
-
-services['nnanoacompanados'] = np.select(
-    condition, fill_with, default=services['nnanoacompanados'])
-services['nnaseparados'] = np.select(
-    condition1, fill_with, default=services['nnaseparados'])
-
-
-# rename variables
-newColumns = loadLocalJsonDoc("defaults/rename_columns.json")
-services_carto = services.rename(columns=newColumns)
-
-# serv_tipo (separating by pipe symbol and categorized with number)
-codify_dict = loadLocalJsonDoc("defaults/codification_dict.json")
-services_dict = codify_dict["services_dict"]
-
-# re structure variable cuenta_con
-cuenta_con_dict = codify_dict["cuenta_con_dict"]
-
-# re structure variable children services (cual_serv1)
-cual_serv1_dict = codify_dict["cual_serv1_dict"]
-
-# re structure variable women services (cual_ser_2)
-cual_ser_2_dict = codify_dict["cual_ser_2_dict"]
-
-# re structure variable data storage (almacenamientoregistros)
-registro_dict = codify_dict["registro_dict"]
-
-# variable funding
-financ_dict = codify_dict["financ_dict"]
-
-#  variable challenges
-reto_dict = codify_dict["reto_dict"]
-
-# variable lenguages
-idio_dict = codify_dict["idio_dict"]
-
-# variable medios
-medio_dict = codify_dict["medio_dict"]
-
-values = [
-    {
-        "target_column": "serv_tipo",
-        "output_column": "serv_tipo1",
-        "values_dict": services_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "cuenta_con",
-        "output_column": "cuenta_c_1",
-        "values_dict": cuenta_con_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "cual_serv1",
-        "output_column": "cual_ser_1",
-        "values_dict": cual_serv1_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "cual_ser_2",
-        "output_column": "cual_ser_3",
-        "values_dict": cual_ser_2_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "almacenamientoregistros",
-        "output_column": "almacenamientoregistros_",
-        "values_dict": cual_ser_2_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "financiamiento",
-        "output_column": "financb",
-        "values_dict": financ_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "princ_reto",
-        "output_column": "princ_re_1",
-        "values_dict": reto_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "idioma_ent",
-        "output_column": "idioma_e_1",
-        "values_dict": idio_dict,
-        "other_value": defaultMissingValue
-    },
-    {
-        "target_column": "medios_bri",
-        "output_column": "medios_b_1",
-        "values_dict": medio_dict,
-        "other_value": defaultMissingValue
-    },
-]
-
-replace_lib = loadLocalJsonDoc("defaults/value_replacements.json")
-services_carto = processValueReplacement(services_carto, replace_lib)
-
-_capitalise_columns = loadLocalJsonDoc(
-    filepath="defaults/column_capitalisation.json")
-
-services_carto = capitaliseColumns(services_carto, _capitalise_columns)
-
-# parsing date field into unix timestamp
-services_carto["timeunix"] = services_carto["fecha"].apply(
-    lambda x: toUnixTimestamp(time=x, format="%d/%m/%Y"))
-
-output_df = processMultValueColumns(services_carto, values)
-
-# Fill  missing values
-output_df = output_df.fillna(defaultMissingValue)
-
-exportToFile(output_df, "csv", output_path)
+if __name__ == "__main__":
+    main()

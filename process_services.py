@@ -1,8 +1,11 @@
-import pandas as pd
+from pandas import read_csv
 import numpy as np
 import os
+from google.cloud import bigquery
 
-from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, exportToFile, processMultValueColumns, processValueReplacement, capitaliseColumns, addReverseGeocodedToDataFrame
+from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, processMultValueColumns, processValueReplacement, capitaliseColumns, addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
+
+from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth
 
 
 defaultMissingValue = 999999
@@ -13,7 +16,7 @@ def main():
     raw_data = input("raw_data_path: ")
     output_path = input("output_path: ")
 
-    services = pd.read_csv(raw_data, sep=';', index_col=False)
+    services = read_csv(raw_data, sep=';', index_col=False)
 
     # Replace "other in organizations"
     services = replaceOrganisation(
@@ -149,7 +152,19 @@ def main():
     # Fill  missing values
     output_df = output_df.fillna(defaultMissingValue)
 
-    exportToFile(output_df, "csv", output_path)
+    output_df = dataFrameToGeoDataFrame(
+        df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
+
+    carto_auth = useCartoAuth()
+
+    carto_client = getCartoClient(carto_auth)
+
+    config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
+
+    destination = os.environ.get("CARTO_SERVICES_DESTINATION")
+
+    uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
+                           destination=destination, config=config)
 
 
 if __name__ == "__main__":

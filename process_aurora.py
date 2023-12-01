@@ -1,8 +1,10 @@
 from pandas import merge, read_csv
 from geopandas import read_file as read_geo_file
-from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, exportToFile, processFieldCoordinates, toUnixTimestamp
+from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, processFieldCoordinates, toUnixTimestamp, dataFrameToGeoDataFrame
+from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth
 import os
 import fsspec
+from google.cloud import bigquery
 
 defaultMissingValue = 999999
 
@@ -84,7 +86,19 @@ def main():
     # should be done at the very end
     aurora_carto = aurora_carto.fillna(defaultMissingValue)
     # database for Carto
-    exportToFile(aurora_carto, "csv", output_path)
+    output_df = dataFrameToGeoDataFrame(
+        df=aurora_carto, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
+
+    carto_auth = useCartoAuth()
+
+    carto_client = getCartoClient(carto_auth)
+
+    config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
+
+    destination = os.environ.get("CARTO_AURORA_DESTINATION")
+
+    uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
+                           destination=destination, config=config)
 
 
 if __name__ == "__main__":

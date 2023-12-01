@@ -1,6 +1,8 @@
 from pandas import merge, read_csv, to_datetime, DataFrame, concat
 from geopandas import read_file as read_geo_file
-from modules.custom_functions import addReverseGeocodedToDataFrame, exportToFile, toUnixTimestampMultiFormatted
+from modules.custom_functions import addReverseGeocodedToDataFrame, toUnixTimestampMultiFormatted, dataFrameToGeoDataFrame
+from modules.custom_io import useCartoAuth, uploadDataFrameToCarto, getCartoClient
+from google.cloud import bigquery
 import os
 import fsspec
 
@@ -165,7 +167,19 @@ def main():
     reshape.fillna(value=999999, inplace=True)
 
     # database for Carto
-    exportToFile(reshape, "csv", output_path)
+    output_df = dataFrameToGeoDataFrame(
+        df=reshape, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
+
+    carto_auth = useCartoAuth()
+
+    carto_client = getCartoClient(carto_auth)
+
+    config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
+
+    destination = os.environ.get("CARTO_MONITOREOS_DESTINATION")
+
+    uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
+                           destination=destination, config=config)
     return
 
 

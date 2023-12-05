@@ -20,3 +20,58 @@ There are three main scripts for processing data for Carto
      - monitoreo
 
 The final procedure of script is to upload the processed data to Carto DataWarehouse.
+
+# How to run the scripts
+
+Before running the scripts, you need to.... TBD
+
+## process_services
+
+The steps are:
+
+ 1. 
+ 2.
+ 
+An example to run it ois:
+```
+$ cd path/to/repo
+$ cp source/file target/path
+$ pip install...
+$ python process_services.py path/to/file
+```
+
+After that, upload the output files to...
+
+## process_aurora
+
+The steps are:
+
+ 1. 
+ 2.
+ 
+An example to run it is:
+```
+$ cd path/to/repo
+$ cp source/file target/path
+$ pip install...
+$ python process_aurora.py path/to/file
+```
+
+After that, upload the output files to...
+
+## process_monitoreps
+
+The steps are:
+
+ 1. 
+ 2.
+ 
+An example to run it is:
+```
+$ cd path/to/repo
+$ cp source/file target/path
+$ pip install...
+$ python process_monitorepss.py path/to/file
+```
+
+After that, upload the output files to...

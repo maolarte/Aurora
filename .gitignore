@@ -4,5 +4,8 @@
 
 secrets/**
 
+env/
+aurora_env
+
 *.pyc
 modules/__pycache__

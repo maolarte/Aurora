@@ -16,6 +16,9 @@ default_value = 999999
 
 
 def getProgressIndicator(data: iter, desc: str, size: int, unit: str):
+    """
+    Shows progressing of a looping function.
+    """
     return tqdm(total=len(data), desc=desc)
 
 
@@ -39,6 +42,9 @@ def loadLocalJsonDoc(filepath, dataProp=''):
 
 
 def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
+    """
+    Returns timestring to unixtimestamp
+    """
     start = datetime(1970, 1, 1)
     target = datetime.strptime(time, format)
     in_seconds = (target - start).total_seconds()
@@ -47,6 +53,9 @@ def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
 
 
 def datetimetoUnixTimestamp(value: datetime):
+    """
+    Returns  unixtimestamp from datetime value
+    """
     start = datetime(1970, 1, 1).date()
     target = value.date()
     time_diff = target - start
@@ -56,6 +65,9 @@ def datetimetoUnixTimestamp(value: datetime):
 
 
 def toUnixTimestampMultiFormatted(time: str, formats: list[str]):
+    """
+    Returns  unixtimestamp while taking in multiple datetime string formats
+    """
 
     for format_str in formats:
         try:
@@ -77,6 +89,9 @@ def toUnixTimestampMultiFormatted(time: str, formats: list[str]):
 
 
 def codifyServices(value: str, values_dict: dict[str, int], otherValue: str):
+    """
+    Return codified value based on value dictonary
+    """
     if (type(value) == float or type(value) == int):
         return otherValue
     raw_values = value.split(" ")
@@ -120,9 +135,13 @@ def processMultValueColumns(df: DataFrame, columnObjectsList: list[dict]):
 
 def exportToFile(df: DataFrame, fileType: str, exportName: str):
     """ 
-    df -> Pandas DataFrame object
-    fileType -> Either "csv" or "json"
-    exportName -> File location
+    EXport DataFrame to csv or json.
+
+    Parameters
+    -----------
+    df: Pandas DataFrame object
+    fileType: Either "csv" or "json"
+    exportName: File location
     """
     if (fileType == "csv"):
         name = f"{exportName}.csv"
@@ -313,6 +332,9 @@ def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: st
 
 
 def dataFrameToGeoDataFrame(df: DataFrame, geometry_column_name: str, lat_column: str, long_column: str):
+    """
+    Returns GeoDataFrame from DataFrame with location fields
+    """
     local_df = deepcopy(df)
     local_df[geometry_column_name] = Point(
         local_df[lat_column], local_df[long_column])

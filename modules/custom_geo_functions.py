@@ -1,10 +1,10 @@
 import sys
-from pandas import DataFrame, Series
-from geopandas import GeoDataFrame, GeoSeries
+from pandas import Series
+from geopandas import GeoSeries
 from shapely.geometry import Point
 
 
-def getDistance(start: list[int], end: list[int]):
+def getDistance(start: list[int], end: list[int]) -> float:
     """
     Return distance between two points
 

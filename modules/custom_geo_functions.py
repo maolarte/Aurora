@@ -5,6 +5,14 @@ from shapely.geometry import Point
 
 
 def getDistance(start: list[int], end: list[int]):
+    """
+    Return distance between two points
+
+    Parameters
+    ----------
+    start: list of integers making up longitude and latitude
+    end: list of integers making up longitude and latitude
+    """
     try:
         start_geom = Point(*start)
         end_geom = Point(*end)

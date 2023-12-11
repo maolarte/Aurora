@@ -45,6 +45,15 @@ def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
     return in_milliseconds
 
 
+def datetimetoUnixTimestamp(value: datetime):
+    start = datetime(1970, 1, 1).date()
+    target = value.date()
+    time_diff = target - start
+    in_seconds = time_diff.total_seconds()
+    in_milliseconds = int(in_seconds) * 1000
+    return in_milliseconds
+
+
 def codifyServices(value: str, values_dict: dict[str, int], otherValue: str):
     if (type(value) == float or type(value) == int):
         return otherValue

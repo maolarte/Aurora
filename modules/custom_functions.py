@@ -1,11 +1,13 @@
 from pandas import DataFrame, Series, concat
+from geopandas import GeoDataFrame
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import re
 import geopandas as gpd
 from time import sleep
 from tqdm import tqdm
+from shapely.geometry import Point
 
 # Mapbox
 from mapbox import Geocoder
@@ -14,6 +16,9 @@ default_value = 999999
 
 
 def getProgressIndicator(data: iter, desc: str, size: int, unit: str):
+    """
+    Shows progressing of a looping function.
+    """
     return tqdm(total=len(data), desc=desc)
 
 
@@ -37,6 +42,9 @@ def loadLocalJsonDoc(filepath, dataProp=''):
 
 
 def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
+    """
+    Returns timestring to unixtimestamp
+    """
     start = datetime(1970, 1, 1)
     target = datetime.strptime(time, format)
     in_seconds = (target - start).total_seconds()
@@ -44,7 +52,46 @@ def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
     return in_milliseconds
 
 
+def datetimetoUnixTimestamp(value: datetime):
+    """
+    Returns  unixtimestamp from datetime value
+    """
+    start = datetime(1970, 1, 1).date()
+    target = value.date()
+    time_diff = target - start
+    in_seconds = time_diff.total_seconds()
+    in_milliseconds = int(in_seconds) * 1000
+    return in_milliseconds
+
+
+def toUnixTimestampMultiFormatted(time: str, formats: list[str]):
+    """
+    Returns  unixtimestamp while taking in multiple datetime string formats
+    """
+
+    for format_str in formats:
+        try:
+            # Parse the date with the specified format
+            target = datetime.strptime(time, format_str)
+
+            # Convert the datetime to UTC if it doesn't have a timezone
+            if target.tzinfo is None:
+                target = target.replace(tzinfo=timezone.utc)
+
+            # Calculate the Unix timestamp in milliseconds
+            in_seconds = (target - datetime(1970, 1, 1,
+                                            tzinfo=timezone.utc)).total_seconds()
+            in_milliseconds = int(in_seconds) * 1000
+
+            return in_milliseconds
+        except ValueError:
+            continue
+
+
 def codifyServices(value: str, values_dict: dict[str, int], otherValue: str):
+    """
+    Return codified value based on value dictonary
+    """
     if (type(value) == float or type(value) == int):
         return otherValue
     raw_values = value.split(" ")
@@ -88,9 +135,13 @@ def processMultValueColumns(df: DataFrame, columnObjectsList: list[dict]):
 
 def exportToFile(df: DataFrame, fileType: str, exportName: str):
     """ 
-    df -> Pandas DataFrame object
-    fileType -> Either "csv" or "json"
-    exportName -> File location
+    EXport DataFrame to csv or json.
+
+    Parameters
+    -----------
+    df: Pandas DataFrame object
+    fileType: Either "csv" or "json"
+    exportName: File location
     """
     if (fileType == "csv"):
         name = f"{exportName}.csv"
@@ -218,16 +269,6 @@ def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]]
     return local_df
 
 
-# def processGeocodeData(data):
-#     features = data['features']
-#     for feature in features:
-#         id: str = feature['id']
-#         match = id.startswith("country")
-#         if (match):
-#             return (feature['properties']['short_code'], feature["place_name"])
-
-#     return "zz"
-
 def processGeocodeData(data):
     features = data['features']
     output = {}
@@ -288,3 +329,14 @@ def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: st
     output = concat([local_df, reversed_geocoded_df],
                     axis=1).fillna(default_value)
     return output
+
+
+def dataFrameToGeoDataFrame(df: DataFrame, geometry_column_name: str, lat_column: str, long_column: str):
+    """
+    Returns GeoDataFrame from DataFrame with location fields
+    """
+    local_df = deepcopy(df)
+    local_df[geometry_column_name] = Point(
+        local_df[lat_column], local_df[long_column])
+    local_geo_df = GeoDataFrame(local_df)
+    return local_geo_df

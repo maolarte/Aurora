@@ -2,5 +2,10 @@
 *.xlsx
 *.zip
 
+secrets/**
+
+env/
+aurora_env
+
+*.pyc
 modules/__pycache__
-tests/modules/__pycache__

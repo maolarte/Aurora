@@ -3,3 +3,4 @@
 *.zip
 
 modules/__pycache__
+tests/modules/__pycache__

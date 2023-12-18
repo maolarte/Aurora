@@ -16,6 +16,8 @@ def main():
     raw_data = input("raw_data_path: ")
     output_path = input("output_path: ")
 
+    working_dir = os.getcwd()
+
     services = read_csv(raw_data, sep=';', index_col=False)
 
     # Replace "other in organizations"
@@ -41,11 +43,13 @@ def main():
         condition1, fill_with, default=services['nnaseparados'])
 
     # rename variables
-    newColumns = loadLocalJsonDoc("defaults/rename_columns.json")
+    newColumns = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/rename_columns.json"))
     services_carto = services.rename(columns=newColumns)
 
     # serv_tipo (separating by pipe symbol and categorized with number)
-    codify_dict = loadLocalJsonDoc("defaults/codification_dict.json")
+    codify_dict = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/codification_dict.json"))
     services_dict = codify_dict["services_dict"]
 
     # re structure variable cuenta_con
@@ -129,7 +133,8 @@ def main():
         },
     ]
 
-    replace_lib = loadLocalJsonDoc("defaults/value_replacements.json")
+    replace_lib = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/value_replacements.json"))
     services_carto = processValueReplacement(services_carto, replace_lib)
 
     _capitalise_columns = loadLocalJsonDoc(
@@ -151,6 +156,10 @@ def main():
 
     # Fill  missing values
     output_df = output_df.fillna(defaultMissingValue)
+
+    if (len(output_path) > 0):
+        output_df.to_csv(f"{output_path}.csv")
+        return
 
     output_df = dataFrameToGeoDataFrame(
         df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")

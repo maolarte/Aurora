@@ -12,13 +12,16 @@ def main():
     aurora_feedback_path = input("Aurora Feedback Path: ")
     aurora_monitoreos_path = input("Aurora Feedback Path: ")
     output_path = input("Output Path: ")
+
+    working_dir = os.getcwd()
+
     # Import dataset
     aurora_cara = read_csv(
-        filepath_or_buffer=aurora_cara_path, date_format="", parse_dates="")
+        filepath_or_buffer=aurora_cara_path)
     aurora_feedback = read_csv(
-        filepath_or_buffer=aurora_feedback_path, date_format="", parse_dates="")
+        filepath_or_buffer=aurora_feedback_path)
     aurora_monitoreos = read_csv(
-        filepath_or_buffer=aurora_monitoreos_path, date_format="", parse_dates="")
+        filepath_or_buffer=aurora_monitoreos_path)
     # Merge tables of first connection
     aurora = merge(aurora_cara, aurora_feedback)
 
@@ -165,6 +168,10 @@ def main():
 
     reshape = reshape.rename(columns=newColumns)
     reshape.fillna(value=999999, inplace=True)
+
+    if (len(output_path) > 0):
+        reshape.to_csv(f"{output_path}.csv")
+        return
 
     # database for Carto
     output_df = dataFrameToGeoDataFrame(

@@ -1,4 +1,4 @@
-from pandas import merge, read_csv
+from pandas import merge, read_csv, concat
 from geopandas import read_file as read_geo_file
 from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, processFieldCoordinates, toUnixTimestamp, dataFrameToGeoDataFrame
 from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth
@@ -12,19 +12,18 @@ defaultMissingValue = 999999
 def main():
     aurora_cara_path = input("Aurora Cara Path: ")
     aurora_feedback_path = input("Aurora Feedback Path: ")
-    aurora_monitoreos_path = input("Aurora Feedback Path: ")
     output_path = input("Output Path: ")
+
+    working_dir = os.getcwd()
 
     # Import dataset
     aurora_cara = read_csv(
-        filepath_or_buffer=aurora_cara_path, date_format="", parse_dates="")
+        filepath_or_buffer=aurora_cara_path)
     aurora_feedback = read_csv(
-        filepath_or_buffer=aurora_feedback_path, date_format="", parse_dates="")
-    aurora_monitoreos = read_csv(
-        filepath_or_buffer=aurora_monitoreos_path, date_format="", parse_dates="")
+        filepath_or_buffer=aurora_feedback_path)
 
     # merging first connection files (caracterization and feedback)
-    aurora = merge(aurora_cara, aurora_feedback, aurora_monitoreos)
+    aurora = merge(aurora_cara, aurora_feedback)
 
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
     user_ids_to_remove = [311571598, 311398466, 311396734, 311361421, 311361350, 311361257, 311337494, 311325070,
@@ -43,7 +42,8 @@ def main():
                     != 'QR-Enganche']
     aurora = aurora[aurora['Latitud'] != "None"]
     # Rename variables to be consistent with the fist round exercise.
-    newColumns = loadLocalJsonDoc("/defaults/aurora_column_name.json")
+    newColumns = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/aurora_column_name.json"))
 
     aurora_carto = aurora.rename(columns=newColumns)
     # Adding coordinates of variables (país de nacimiento, país donde inicio el viaje and país donde vivía hace un año)
@@ -51,7 +51,8 @@ def main():
     available_countries = [x.lower() for x in list(set(list(aurora_carto["e08_pais_"].unique(
     )) + list(aurora_carto["e10_pais_"].unique()) + list(aurora_carto["e12_pais_"].unique()))) if type(x) == str]
 
-    countries_dict = loadLocalJsonDoc("defaults/countries_dict.json")
+    countries_dict = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/countries_dict.json"))
 
     available_countries = processCountries(available_countries, countries_dict)
 
@@ -65,7 +66,8 @@ def main():
 
     countriesWithCoordinates = getCountriesWithCoordinates(
         available_countries, country_df)
-    country_column_dict = loadLocalJsonDoc("defaults/country_column_dict.json")
+    country_column_dict = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/country_column_dict.json"))
     aurora_carto = processFieldCoordinates(
         aurora_carto, country_column_dict, countriesWithCoordinates, countries_dict)
 
@@ -81,10 +83,16 @@ def main():
     MAPBOX_TOKEN = os.environ.get("MAPBOX_TOKEN")
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
-    aurora_carto = addReverseGeocodedToDataFrame(aurora_carto, MAPBOX_TOKEN)
+    aurora_carto = addReverseGeocodedToDataFrame(
+        df=aurora_carto, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Auora")
     # filling missing values
     # should be done at the very end
     aurora_carto = aurora_carto.fillna(defaultMissingValue)
+
+    if (len(output_path) > 0):
+        aurora_carto.to_csv(f"{output_path}.csv")
+        return
+
     # database for Carto
     output_df = dataFrameToGeoDataFrame(
         df=aurora_carto, geometry_column_name="geom", lat_column="latitude", long_column="longitude")

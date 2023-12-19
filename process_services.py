@@ -1,3 +1,4 @@
+import sys
 from pandas import read_csv
 import numpy as np
 import os
@@ -5,16 +6,13 @@ from google.cloud import bigquery
 
 from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, processMultValueColumns, processValueReplacement, capitaliseColumns, addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
 
-from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth
+from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth, exportDataFrameToFile
 
 
 defaultMissingValue = 999999
 
 
-def main():
-    # Import dataset
-    raw_data = input("raw_data_path: ")
-    output_path = input("output_path: ")
+def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
 
     services = read_csv(raw_data, sep=';', index_col=False)
 
@@ -155,6 +153,11 @@ def main():
     output_df = dataFrameToGeoDataFrame(
         df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
 
+    if (len(output_df) > 0):
+        exportDataFrameToFile(
+            df=output_df, fileType=output_type, exportName=output_path)
+        return
+
     carto_auth = useCartoAuth()
 
     carto_client = getCartoClient(carto_auth)
@@ -166,6 +169,22 @@ def main():
     uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
                            destination=destination, config=config)
 
+    print(f"Uploaded to {destination}")
+
 
 if __name__ == "__main__":
-    main()
+    raw_data = sys.argv[1]
+    options = sys.argv[2:]
+
+    output_path = ""
+    output_type = "csv"
+
+    if (len(options) != 0):
+        for index, option in enumerate(options):
+            print(index, option)
+            if (option == "-o"):
+                output_path = options[index+1]
+            elif (option == "-ot"):
+                output_type = options[index+1]
+
+    main(raw_data=raw_data, output_type=output_type, output_path=output_path)

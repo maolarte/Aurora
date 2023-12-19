@@ -156,16 +156,12 @@ def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
     output_df = output_df.fillna(defaultMissingValue)
 
     if (len(output_path) > 0):
-        output_df.to_csv(f"{output_path}.csv")
+        exportDataFrameToFile(df=output_df, fileType="csv",
+                              exportName=output_path)
         return
 
     output_df = dataFrameToGeoDataFrame(
         df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
-
-    if (len(output_df) > 0):
-        exportDataFrameToFile(
-            df=output_df, fileType=output_type, exportName=output_path)
-        return
 
     carto_auth = useCartoAuth()
 

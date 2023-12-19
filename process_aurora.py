@@ -1,7 +1,7 @@
 from pandas import merge, read_csv, concat
 from geopandas import read_file as read_geo_file
 from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, processFieldCoordinates, toUnixTimestamp, dataFrameToGeoDataFrame
-from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth
+from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth, exportDataFrameToFile
 import os
 import fsspec
 from google.cloud import bigquery
@@ -90,7 +90,8 @@ def main():
     aurora_carto = aurora_carto.fillna(defaultMissingValue)
 
     if (len(output_path) > 0):
-        aurora_carto.to_csv(f"{output_path}.csv")
+        exportDataFrameToFile(
+            df=aurora_carto, fileType="csv", exportName=output_path)
         return
 
     # database for Carto

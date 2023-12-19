@@ -1,4 +1,4 @@
-from modules.custom_functions import exportToFile, addReverseGeocodedToDataFrame
+from custom_functions import exportToFile, addReverseGeocodedToDataFrame
 from pandas import read_csv
 import os
 

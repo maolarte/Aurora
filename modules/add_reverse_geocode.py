@@ -15,8 +15,10 @@ def main():
 
     df = read_csv(filepath_or_buffer=file_path)
 
+    name = os.path.basename(file_path)
+
     output_df = addReverseGeocodedToDataFrame(
-        df=df, lon_column=lon, lat_column=lat, token=token, name=file_path)
+        df=df, lon_column=lon, lat_column=lat, token=token, name=name)
 
     exportToFile(output_df, "csv", output_path)
 

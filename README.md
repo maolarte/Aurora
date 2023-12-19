@@ -21,20 +21,28 @@ There are three main scripts for processing data for Carto
 
 The final procedure of script is to upload the processed data to Carto DataWarehouse.
 
-# How to run the scripts
+## How to run the scripts
 
-Before running the scripts, you need to.... TBD
+Before running the scripts, you need to install the require modules which have been the `requirements.txt`.
 
-## process_services
+```Bash
+cd path/to/repo
+$ python -m venv ./env
+$ ./env/Scripts/activate
+$ pip install -r ./requirements.txt
+```
+
+### `process_services`
 
 The steps are:
 
- 1. 
- 2.
- 
+1.
+2.
+
 An example to run it ois:
-```
-$ cd path/to/repo
+
+```Bash
+cd path/to/repo
 $ cp source/file target/path
 $ pip install...
 $ python process_services.py path/to/file
@@ -42,16 +50,17 @@ $ python process_services.py path/to/file
 
 After that, upload the output files to...
 
-## process_aurora
+### `process_aurora`
 
 The steps are:
 
- 1. 
- 2.
- 
+1.
+2.
+
 An example to run it is:
-```
-$ cd path/to/repo
+
+```Bash
+cd path/to/repo
 $ cp source/file target/path
 $ pip install...
 $ python process_aurora.py path/to/file
@@ -59,23 +68,24 @@ $ python process_aurora.py path/to/file
 
 After that, upload the output files to...
 
-## process_monitoreps
+## `process_monitoreps`
 
 The steps are:
 
- 1. 
- 2.
- 
+1.
+2.
+
 An example to run it is:
-```
-$ cd path/to/repo
-$ cp source/file target/path
-$ pip install...
-$ python process_monitorepss.py path/to/file
+
+```Bash
+cd path/to/repo
+cp source/file target/path
+pip install...
+python process_monitorepss.py path/to/file
 ```
 
 After that, upload the output files to...
 
-# Tests
+## Tests
 
 TBD...

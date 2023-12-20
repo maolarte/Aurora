@@ -5,23 +5,20 @@ from modules.custom_io import useCartoAuth, uploadDataFrameToCarto, getCartoClie
 from google.cloud import bigquery
 import os
 import fsspec
+from argparse import ArgumentParser
 
 
-def main():
-    aurora_cara_path = input("Aurora Cara Path: ")
-    aurora_feedback_path = input("Aurora Feedback Path: ")
-    aurora_monitoreos_path = input("Aurora Feedback Path: ")
-    output_path = input("Output Path: ")
+def main(cara_path: str, feedback_path: str, monitoreo_path: str, output_path: str = "", output_format: str = "csv"):
 
     working_dir = os.getcwd()
 
     # Import dataset
     aurora_cara = read_csv(
-        filepath_or_buffer=aurora_cara_path)
+        filepath_or_buffer=cara_path)
     aurora_feedback = read_csv(
-        filepath_or_buffer=aurora_feedback_path)
+        filepath_or_buffer=feedback_path)
     aurora_monitoreos = read_csv(
-        filepath_or_buffer=aurora_monitoreos_path)
+        filepath_or_buffer=monitoreo_path)
     # Merge tables of first connection
     aurora = merge(aurora_cara, aurora_feedback)
 
@@ -170,7 +167,7 @@ def main():
     reshape.fillna(value=999999, inplace=True)
 
     if (len(output_path) > 0):
-        exportDataFrameToFile(df=reshape, fileType="csv",
+        exportDataFrameToFile(df=reshape, fileType=output_format,
                               exportName=output_path)
         return
 
@@ -191,5 +188,26 @@ def main():
     return
 
 
+parser = ArgumentParser()
 if __name__ == "__main__":
-    main()
+    parser.add_argument('--cara_path', type=str, required=True,
+                        help="File location path for Aurora Characterization data")
+    parser.add_argument('--feedback_path', type=str, required=True,
+                        help="File location path for Aurora Feedback data")
+    parser.add_argument('--monitoreo_path', type=str, required=True,
+                        help="File location path for Aurora Monitoreo data")
+    parser.add_argument('--output', type=str,
+                        help='Output name or output path')
+
+    parser.add_argument('--format', type=str, choices=[
+                        'csv', 'json'], default='csv', help='Output format if output path is given')
+
+    args = parser.parse_args()
+
+    cara_path = args.cara_path
+    feedback_path = args.feedback_path
+    monitoreo_path = args.monitoreo_path
+    output_path = args.output
+    output_format = args.format
+    main(cara_path=cara_path, feedback_path=feedback_path, monitoreo_path=monitoreo_path,
+         output_path=output_path, output_format=output_format)

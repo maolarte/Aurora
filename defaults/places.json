@@ -1,0 +1,24 @@
+{
+  "locals": {
+    "colchane": "Colchane",
+    "arica": "Arica",
+    "villa del rosario": "Villa del Rosario",
+    "chinacota": "Chinácota",
+    "iquique": "Iquique",
+    "lospatios": "Los Patios",
+    "dtlobito": "DT Lobito",
+    "loschiles": "Los Chiles",
+    "necocli": "Necoclí",
+    "ipiales": "Ipiales",
+    "pasocanoas": "Paso Canoas",
+    "lajasblancas": "Lajas Blancas",
+    "sanvicente": "San Vicente",
+    "sanjose": "San José"
+  },
+  "countries": {
+    "colombia": "Colombia",
+    "chile": "Chile",
+    "panama": "Panama",
+    "costarica": "Costa Rica"
+  }
+}

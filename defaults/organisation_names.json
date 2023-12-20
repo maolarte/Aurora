@@ -1,0 +1,41 @@
+{
+  "principals": {
+    "hias": "Hias",
+    "worldvision": "World Vision",
+    "cruzroja": "Cruz Roja",
+    "serviciojesuitaparamigrantes": "Servicio Jesuita a Migrantes",
+    "samaritanspurse": "Samaritans Purse",
+    "ayudaenaccion": "Ayuda en Acción",
+    "unicef": "Unicef",
+    "pastoralsocial": "Pastoral Social",
+    "acnur": "Acnur",
+    "oim": "OIM",
+    "Sub secretaria de la niñez": "Subsecretaría de la Niñez",
+    "consejonoruegopararefugiadosnrc": "NRC",
+    "globalbrigades": "Global Brigades",
+    "A titulo personal pero bajo figura de asociación de desarrollo": "Asociación Local de Desarrollo",
+    "medicossinfronteras": "Médicos sin Fronteras",
+    "Delegación presidencial - encargada social Yenderi Jaldin y de logística Franco Villalobos": "Delegación Presidencial",
+    "Simn": "SIMN",
+    "Delegación presidencial regional de Tarapaca (DPR)": "Delegación Presidencial Regional de Tarapacá"
+  },
+  "implementors": {
+    "hias": "Hias",
+    "worldvision": "World Vision",
+    "cruzroja": "Cruz Roja",
+    "serviciojesuitaparamigrantes": "Servicio Jesuita a Migrantes",
+    "samaritanspurse": "Samaritans Purse",
+    "ayudaenaccion": "Ayuda en Acción",
+    "unicef": "Unicef",
+    "pastoralsocial": "Pastoral Social",
+    "Hogar de cristo": "Hogar de Cristo",
+    "acnur": "Acnur",
+    "Fundación grandes valores futbol mas": "Fundación Futbol Más",
+    "retinternacional": "RET Internacional",
+    "consejonoruegopararefugiadosnrc": "NRC",
+    "globalbrigades": "Global Brigades",
+    "A titulo personal pero bajo figura de asociación de desarrollo": "Asociación Local de Desarrollo",
+    "CIDEMOS": "Cidemos",
+    "hias otra": "Hias"
+  }
+}

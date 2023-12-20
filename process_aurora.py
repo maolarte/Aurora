@@ -5,22 +5,20 @@ from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAu
 import os
 import fsspec
 from google.cloud import bigquery
+from argparse import ArgumentParser
 
 defaultMissingValue = 999999
 
 
-def main():
-    aurora_cara_path = input("Aurora Cara Path: ")
-    aurora_feedback_path = input("Aurora Feedback Path: ")
-    output_path = input("Output Path: ")
+def main(cara_path: str, feedback_path: str, output_path: str = "", output_format: str = "csv"):
 
     working_dir = os.getcwd()
 
     # Import dataset
     aurora_cara = read_csv(
-        filepath_or_buffer=aurora_cara_path)
+        filepath_or_buffer=cara_path)
     aurora_feedback = read_csv(
-        filepath_or_buffer=aurora_feedback_path)
+        filepath_or_buffer=feedback_path)
 
     # merging first connection files (caracterization and feedback)
     aurora = merge(aurora_cara, aurora_feedback)
@@ -91,7 +89,7 @@ def main():
 
     if (len(output_path) > 0):
         exportDataFrameToFile(
-            df=aurora_carto, fileType="csv", exportName=output_path)
+            df=aurora_carto, fileType=output_format, exportName=output_path)
         return
 
     # database for Carto
@@ -110,5 +108,27 @@ def main():
                            destination=destination, config=config)
 
 
+parser = ArgumentParser()
 if __name__ == "__main__":
-    main()
+    parser.add_argument('--cara_path', type=str, required=True,
+                        help="File location path for Aurora Characterization data")
+    parser.add_argument('--feedback_path', type=str, required=True,
+                        help="File location path for Aurora Feedback data")
+    parser.add_argument('--output', type=str,
+                        help='Output name or output path')
+
+    parser.add_argument('--format', type=str, choices=[
+                        'csv', 'json'], default='csv', help='Output format if output path is given')
+
+    args = parser.parse_args()
+
+    cara_path = args.cara_path
+    feedback_path = args.feedback_path
+    output_path = args.output
+    output_format = args.format
+
+    if (cara_path & feedback_path):
+        main(cara_path=cara_path, feedback_path=feedback_path,
+             output_path=output_path, output_format=output_format)
+    else:
+        print("Please add both Characterization data path and Feedback data path")

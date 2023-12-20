@@ -1,4 +1,5 @@
 import sys
+from argparse import ArgumentParser
 from pandas import read_csv
 import numpy as np
 import os
@@ -12,7 +13,7 @@ from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAu
 defaultMissingValue = 999999
 
 
-def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
+def main(raw_data: str, output_path: str = "", output_format: str = "csv"):
 
     working_dir = os.getcwd()
 
@@ -40,10 +41,45 @@ def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
     services['nnaseparados'] = np.select(
         condition1, fill_with, default=services['nnaseparados'])
 
-    # rename variables
+    # keep the observations that were agreed with the informed consent
+    services = services[services['consentimiento'] != 'no']
+
+    # Renaming variables
+
+    # organizations name
+    organisation = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/organisation_names.json"))
+
+    # Implementor organisation
+    implemen_dict = organisation['implementors']
+    services['organizacionimplementadora'] = services['organizacionimplementadora'].replace(
+        implemen_dict)
+
+    # Principals organisation
+    principal_dict = organisation['principals']
+    services['organizacionprincipal'] = services['organizacionprincipal'].replace(
+        principal_dict)
+
+    # Places
+    places = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/places.json"))
+    # locals
+    places_dict = places['locals']
+    services['punto_reporte'] = services['punto_reporte'].replace(places_dict)
+
+    # countries
+    country_dict = places['countries']
+    services['pais'] = services['pais'].replace(country_dict)
+
+    # Columns
     newColumns = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults/rename_columns.json"))
     services_carto = services.rename(columns=newColumns)
+
+    # Dropping two text variables related to final observations and scarce services
+    # (they are not needed in Carto, they are important on other analysis)
+    services_carto = services_carto.drop("observacion", axis='columns')
+    services_carto = services_carto.drop("serviciosescasos", axis='columns')
 
     # serv_tipo (separating by pipe symbol and categorized with number)
     codify_dict = loadLocalJsonDoc(os.path.join(
@@ -135,14 +171,14 @@ def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
         working_dir, "defaults/value_replacements.json"))
     services_carto = processValueReplacement(services_carto, replace_lib)
 
-    _capitalise_columns = loadLocalJsonDoc(
-        filepath="defaults/column_capitalisation.json")
+    _capitalise_columns = loadLocalJsonDoc(os.path.join(
+        working_dir, "defaults/column_capitalisation.json"))
 
     services_carto = capitaliseColumns(services_carto, _capitalise_columns)
 
     # parsing date field into unix timestamp
     services_carto["timeunix"] = services_carto["fecha"].apply(
-        lambda x: toUnixTimestamp(time=x, format="%d/%m/%Y"))
+        lambda x: toUnixTimestamp(time=x, format="%Y-%m-%d"))
 
     output_df = processMultValueColumns(services_carto, values)
 
@@ -156,7 +192,7 @@ def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
     output_df = output_df.fillna(defaultMissingValue)
 
     if (len(output_path) > 0):
-        exportDataFrameToFile(df=output_df, fileType="csv",
+        exportDataFrameToFile(df=output_df, fileType=output_format,
                               exportName=output_path)
         return
 
@@ -177,19 +213,21 @@ def main(raw_data: str, output_path: str = "", output_type: str = "csv"):
     print(f"Uploaded to {destination}")
 
 
+parser = ArgumentParser()
+
 if __name__ == "__main__":
-    raw_data = sys.argv[1]
-    options = sys.argv[2:]
+    parser.add_argument('file_path', type=str,
+                        help='File path, the location of which the service data file is located. Also accepts https file endpoints.')
 
-    output_path = ""
-    output_type = "csv"
+    parser.add_argument('--output', type=str,
+                        help='Output path location')
 
-    if (len(options) != 0):
-        for index, option in enumerate(options):
-            print(index, option)
-            if (option == "-o"):
-                output_path = options[index+1]
-            elif (option == "-ot"):
-                output_type = options[index+1]
+    parser.add_argument('--format', type=str, choices=[
+                        'csv', 'json'], default='csv', help='Output format if output path is given')
 
-    main(raw_data=raw_data, output_type=output_type, output_path=output_path)
+    args = parser.parse_args()
+    raw_data = args.file_path
+    output_path = args.output
+    output_format = args.format
+
+    main(raw_data=raw_data, output_format=output_format, output_path=output_path)

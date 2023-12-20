@@ -180,7 +180,10 @@ def processValueReplacement(df: DataFrame, replace_dict: dict[str, dict[str, str
 def capitaliseColumns(df: DataFrame, columns: list[str]):
     local_df = deepcopy(df)
     for col in columns:
-        local_df[col] = local_df[col].str.title()
+        try:
+            local_df[col] = local_df[col].str.title()
+        except Exception as e:
+            continue
     return local_df
 
 

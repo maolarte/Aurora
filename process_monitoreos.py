@@ -8,7 +8,7 @@ import fsspec
 from argparse import ArgumentParser
 
 
-def main(cara_path: str, feedback_path: str, monitoreo_path: str, output_path: str = "", output_format: str = "csv"):
+def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: str = "", output_path: str = "", output_format: str = "csv"):
 
     working_dir = os.getcwd()
 
@@ -172,20 +172,21 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, output_path: s
         return
 
     # database for Carto
-    output_df = dataFrameToGeoDataFrame(
-        df=reshape, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
+    if (bool(destination)):
+        output_df = dataFrameToGeoDataFrame(
+            df=reshape, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
 
-    carto_auth = useCartoAuth()
+        carto_auth = useCartoAuth()
 
-    carto_client = getCartoClient(carto_auth)
+        carto_client = getCartoClient(carto_auth)
 
-    config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
+        config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
 
-    destination = os.environ.get("CARTO_MONITOREOS_DESTINATION")
+        uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
+                               destination=destination, config=config)
+        return
 
-    uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
-                           destination=destination, config=config)
-    return
+    print("No file was exported")
 
 
 parser = ArgumentParser()

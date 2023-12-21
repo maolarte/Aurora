@@ -13,7 +13,7 @@ from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAu
 defaultMissingValue = 999999
 
 
-def main(raw_data: str, output_path: str = "", output_format: str = "csv"):
+def main(raw_data: str, destination: str = "", output_path: str = "", output_format: str = "csv"):
 
     working_dir = os.getcwd()
 
@@ -196,21 +196,20 @@ def main(raw_data: str, output_path: str = "", output_format: str = "csv"):
                               exportName=output_path)
         return
 
-    output_df = dataFrameToGeoDataFrame(
-        df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
+    if (bool(destination)):
+        output_df = dataFrameToGeoDataFrame(
+            df=output_df, geometry_column_name="geom", lat_column="latitude", long_column="longitude")
 
-    carto_auth = useCartoAuth()
+        carto_auth = useCartoAuth()
 
-    carto_client = getCartoClient(carto_auth)
+        carto_client = getCartoClient(carto_auth)
 
-    config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
+        config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE",)
 
-    destination = os.environ.get("CARTO_SERVICES_DESTINATION")
+        uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
+                               destination=destination, config=config)
 
-    uploadDataFrameToCarto(cartDW=carto_client, df=output_df,
-                           destination=destination, config=config)
-
-    print(f"Uploaded to {destination}")
+    print("No file was exported")
 
 
 parser = ArgumentParser()

@@ -31,16 +31,10 @@ python process_monitorepss.py  {path/to/file} --output_path path/to/file --forma
 The options available:
 
 - `{path/to/file}`: File path, the location of which the service data file is located. Also accepts https file endpoints.
+- `--destination`: Carto data warehouse endpoint
 - `--output`: Output name or output path
 - `--format`: Output format if output path is given. Can either be `csv` or `json`.
   An example to run it is:
-
-```Bash
-cd path/to/repo
-$ cp source/file target/path
-$ pip install...
-$ python process_services.py path/to/file
-```
 
 ### `process_aurora`
 
@@ -64,6 +58,7 @@ The option available:
 
 - `--cara_path`: File location path for Aurora Characterization data in csv format
 - `--feedback_path`: File location path for Aurora Feedback data in csv format
+- `--destination`: Carto data warehouse endpoint
 - `--output`: Output name or output path
 - `--format`: Output format if output path is given. Can either be `csv` or `json`.
 
@@ -89,6 +84,7 @@ The option available:
 - `--cara_path`: File location path for Aurora Characterization data in csv format
 - `--feedback_path`: File location path for Aurora Feedback data in csv format
 - `--monitoreo_path`: File location path for Aurora Monitoreo data in csv format
+- `--destination`: Carto data warehouse endpoint
 - `--output`: Output name or output path
 - `--format`: Output format if output path is given. Can either be `csv` or `json`.
 
@@ -108,4 +104,12 @@ python process_service.py ~/raw_data.csv --output ~/output --format json
 
 once you have the file ready, you can follow these steps to upload to carto data warehouse: [link](https://docs.carto.com/carto-user-manual/data-explorer/importing-data#how-to-import-data)
 
-2. **Automated Upload**
+2. **Carto Data Client Upload**
+
+You can also upload the data directly to carto data warehouse. You can use `--destination` flag to add your destination in carto using bigquery destination notation.
+
+- **Example:**
+
+```Bash
+python process_service.py ~/raw_data.csv --destination qualified_table_name
+```

@@ -58,6 +58,7 @@ def getCartoClient(auth: CartoAuth):
 def uploadDataFrameToCarto(cartDW: Client, df: DataFrame, destination: str,  config):
     job = cartDW.load_table_from_dataframe(
         dataframe=df, destination=destination, job_config=config)
+    print("uploaded to "+destination)
     return job
 
 

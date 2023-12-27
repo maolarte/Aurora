@@ -7,5 +7,7 @@ secrets/**
 env/
 aurora_env
 
+*.zip
+
 *.pyc
 modules/__pycache__

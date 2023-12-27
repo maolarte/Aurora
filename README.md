@@ -38,10 +38,10 @@ The options available:
 
 ### `process_aurora`
 
-This script process data collected using Landbot. It uses three data sheets
+This script process data collected using Landbot. It uses two data sheets
 
-- ayudaHumanitaria
-- caracterización
+- Feedback Data
+- Characterization Data
 
 The steps are:
 
@@ -66,9 +66,9 @@ The option available:
 
 This script process data collected using Landbot. It uses three data sheets
 
-- ayudaHumanitaria
-- caracterización
-- monitoreo
+- Feedback Data
+- Characterization Data
+- Monitoring Data
 
 The steps are:
 
@@ -83,7 +83,7 @@ The option available:
 
 - `--cara_path`: File location path for Aurora Characterization data in csv format
 - `--feedback_path`: File location path for Aurora Feedback data in csv format
-- `--monitoreo_path`: File location path for Aurora Monitoreo data in csv format
+- `--monitoreo_path`: File location path for Aurora Monitoring data in csv format
 - `--destination`: Carto data warehouse endpoint
 - `--output`: Output name or output path
 - `--format`: Output format if output path is given. Can either be `csv` or `json`.

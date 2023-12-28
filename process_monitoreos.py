@@ -1,3 +1,4 @@
+import sys
 from pandas import merge, read_csv, to_datetime, DataFrame, concat
 from geopandas import read_file as read_geo_file
 from modules.custom_functions import addReverseGeocodedToDataFrame, toUnixTimestampMultiFormatted, dataFrameToGeoDataFrame
@@ -214,8 +215,21 @@ if __name__ == "__main__":
     output_path = args.output
     output_format = args.format
 
-    if (bool(cara_path) & bool(feedback_path) & bool(monitoreo_path)):
-        main(cara_path=cara_path, feedback_path=feedback_path, monitoreo_path=monitoreo_path, destination=destination,
-             output_path=output_path, output_format=output_format)
-    else:
-        print("Please make sure you have added all data paths")
+    if (not bool(cara_path)):
+        print("Please add both Characterization data path")
+        sys.exit()
+
+    if (not bool(feedback_path)):
+        print("Please add both Feedback data path")
+        sys.exit()
+
+    if (not bool(monitoreo_path)):
+        print("Please add both Monitoring data path")
+        sys.exit()
+
+    if ((not bool(output_path)) & (not bool(destination))):
+        print("Print add at least one output method")
+        sys.exit()
+
+    main(cara_path=cara_path, feedback_path=feedback_path, monitoreo_path=monitoreo_path, destination=destination,
+         output_path=output_path, output_format=output_format)

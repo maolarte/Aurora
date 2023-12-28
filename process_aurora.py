@@ -1,3 +1,4 @@
+import sys
 from pandas import merge, read_csv, concat
 from geopandas import read_file as read_geo_file
 from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, processFieldCoordinates, toUnixTimestamp, dataFrameToGeoDataFrame
@@ -132,8 +133,17 @@ if __name__ == "__main__":
     output_path = args.output
     output_format = args.format
 
-    if (bool(cara_path) & bool(feedback_path)):
-        main(cara_path=cara_path, feedback_path=feedback_path,
-             output_path=output_path, output_format=output_format, destination=destination)
-    else:
-        print("Please add both Characterization data path and Feedback data path")
+    if (not bool(cara_path)):
+        print("Please add both Characterization data path")
+        sys.exit()
+
+    if (not bool(feedback_path)):
+        print("Please add both Feedback data path")
+        sys.exit()
+
+    if ((not bool(output_path)) & (not bool(destination))):
+        print("Print add at least one output method")
+        sys.exit()
+
+    main(cara_path=cara_path, feedback_path=feedback_path,
+         output_path=output_path, output_format=output_format, destination=destination)

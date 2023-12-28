@@ -231,8 +231,14 @@ if __name__ == "__main__":
     destination = args.destination
     output_path = args.output
     output_format = args.format
-    if (bool(raw_data)):
-        main(raw_data=raw_data, destination=destination,
-             output_format=output_format, output_path=output_path)
-    else:
-        print("Please add raw data path")
+
+    if (not bool(raw_data)):
+        print("Please add both raw data path")
+        sys.exit()
+
+    if ((not bool(output_path)) & (not bool(destination))):
+        print("Print add at least one output method")
+        sys.exit()
+
+    main(raw_data=raw_data, destination=destination,
+         output_format=output_format, output_path=output_path)

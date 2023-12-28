@@ -26,9 +26,14 @@ def loadLocalJsonDoc(filepath, dataProp=''):
 
 def exportDataFrameToFile(df: DataFrame, fileType: str, exportName: str):
     """ 
-    df -> Pandas DataFrame object
-    fileType -> Either "csv" or "json"
-    exportName -> File location
+    Export DataFrame to file[csv, json]
+
+    Parameters
+    -----------
+
+    df: Pandas DataFrame object
+    fileType: Export format which can be either "csv" or "json"
+    exportName: Export file name or File location
     """
     if (fileType == "csv"):
         name = f"{exportName}.csv"

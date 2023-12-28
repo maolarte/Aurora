@@ -217,6 +217,8 @@ parser = ArgumentParser()
 if __name__ == "__main__":
     parser.add_argument('file_path', type=str,
                         help='File path, the location of which the service data file is located. Also accepts https file endpoints.')
+    parser.add_argument('--destination', type=str,
+                        help='Carto data warehouse endpoint')
 
     parser.add_argument('--output', type=str,
                         help='Output path location')
@@ -226,7 +228,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     raw_data = args.file_path
+    destination = args.destination
     output_path = args.output
     output_format = args.format
-
-    main(raw_data=raw_data, output_format=output_format, output_path=output_path)
+    if (bool(raw_data)):
+        main(raw_data=raw_data, destination=destination,
+             output_format=output_format, output_path=output_path)
+    else:
+        print("Please add raw data path")

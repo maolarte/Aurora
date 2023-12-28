@@ -116,6 +116,8 @@ if __name__ == "__main__":
                         help="File location path for Aurora Characterization data")
     parser.add_argument('--feedback_path', type=str, required=True,
                         help="File location path for Aurora Feedback data")
+    parser.add_argument('--destination', type=str,
+                        help='Carto data warehouse endpoint')
     parser.add_argument('--output', type=str,
                         help='Output name or output path')
 
@@ -126,11 +128,12 @@ if __name__ == "__main__":
 
     cara_path = args.cara_path
     feedback_path = args.feedback_path
+    destination = args.destination
     output_path = args.output
     output_format = args.format
 
-    if (cara_path & feedback_path):
+    if (bool(cara_path) & bool(feedback_path)):
         main(cara_path=cara_path, feedback_path=feedback_path,
-             output_path=output_path, output_format=output_format)
+             output_path=output_path, output_format=output_format, destination=destination)
     else:
         print("Please add both Characterization data path and Feedback data path")

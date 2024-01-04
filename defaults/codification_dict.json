@@ -1,93 +1,138 @@
 {
   "services_dict": {
-    "1": "asesorialegal",
-    "2": "alimentacionynutricion",
-    "3": "saludprimerosauxiliosyatencionmedica",
-    "4": "aguapotable",
-    "5": "saneamiento",
-    "6": "higiene",
-    "8": "educacion",
-    "9": "alojamientotemporal",
-    "11": "acompañamientoayudapsicosocial",
-    "12": "transportehumanitario",
-    "13": "Otro",
-    "14": "serviciosdeproteccion",
-    "16": "restablecimientodecontactofamiliar",
-    "18": "transferencias"
+    "target_column": "serv_tipo",
+    "output_column": "serv_tipo1",
+    "values_dict": {
+      "1": "asesorialegal",
+      "2": "alimentacionynutricion",
+      "3": "saludprimerosauxiliosyatencionmedica",
+      "4": "aguapotable",
+      "5": "saneamiento",
+      "6": "higiene",
+      "8": "educacion",
+      "9": "alojamientotemporal",
+      "11": "acompañamientoayudapsicosocial",
+      "12": "transportehumanitario",
+      "13": "Otro",
+      "14": "serviciosdeproteccion",
+      "16": "restablecimientodecontactofamiliar",
+      "18": "transferencias"
+    },
+    "other_value": 999999
   },
 
   "cuenta_con_dict": {
-    "1": "accesoaserviciodeinternet",
-    "2": "accesoaservicioelectrico",
-    "3": "areadecomedorescocina",
-    "4": "areaparadisposiciondebasuras",
-    "5": "areascomunes",
-    "6": "areasdelavanderia",
-    "7": "areasderegistrodelapoblacion",
-    "8": "ningunadelasanteriores"
+    "target_column": "cuenta_con",
+    "output_column": "cuenta_c_1",
+    "values_dict": {
+      "1": "accesoaserviciodeinternet",
+      "2": "accesoaservicioelectrico",
+      "3": "areadecomedorescocina",
+      "4": "areaparadisposiciondebasuras",
+      "5": "areascomunes",
+      "6": "areasdelavanderia",
+      "7": "areasderegistrodelapoblacion",
+      "8": "ningunadelasanteriores"
+    },
+    "other_value": 999999
   },
 
   "cual_serv1_dict": {
-    "1": "nnaapoyooayudapsicosocial",
-    "2": "nnagestiondecasos",
-    "3": "nnaentregadekits",
-    "4": "nnaalimentacionynutricion",
-    "5": "nnabanosexclusivosnna",
-    "6": "nnacuidadosalternativos",
-    "7": "nnaotro",
-    "8": "espaciosamigables",
-    "9": " "
+    "target_column": "cual_serv1",
+    "output_column": "cual_ser_1",
+    "values_dict": {
+      "1": "nnaapoyooayudapsicosocial",
+      "2": "nnagestiondecasos",
+      "3": "nnaentregadekits",
+      "4": "nnaalimentacionynutricion",
+      "5": "nnabanosexclusivosnna",
+      "6": "nnacuidadosalternativos",
+      "7": "nnaotro",
+      "8": "espaciosamigables",
+      "9": " "
+    },
+    "other_value": 999999
   },
 
   "cual_ser_2_dict": {
-    "0": " ",
-    "1": "mujeresespaciosseguros",
-    "2": "mujeresduchasobanos",
-    "3": "mujeresgestiondecasosdeviolenciasbasadasengenero",
-    "4": "mujeresproductosdehigienemenstrual",
-    "5": "mujeresotro",
-    "6": "mujerescontrolesprenatales",
-    "7": "mujeresapoyonutricionalgestantesylactantes"
+    "target_column": "cual_ser_2",
+    "output_column": "cual_ser_3",
+    "values_dict": {
+      "0": " ",
+      "1": "mujeresespaciosseguros",
+      "2": "mujeresduchasobanos",
+      "3": "mujeresgestiondecasosdeviolenciasbasadasengenero",
+      "4": "mujeresproductosdehigienemenstrual",
+      "5": "mujeresotro",
+      "6": "mujerescontrolesprenatales",
+      "7": "mujeresapoyonutricionalgestantesylactantes"
+    },
+    "other_value": 999999
   },
   "registro_dict": {
-    "1": "archivofisico",
-    "2": "hojacalculo",
-    "3": "software",
-    "4": "otroalmacenarregistro",
-    "5": " "
+    "target_column": "almacenamientoregistros",
+    "output_column": "almacenamientoregistros_",
+    "values_dict": {
+      "1": "archivofisico",
+      "2": "hojacalculo",
+      "3": "software",
+      "4": "otroalmacenarregistro",
+      "5": " "
+    },
+    "other_value": 999999
   },
   "financ_dict": {
-    "1": "organismosorganizacionesinternacionales",
-    "2": "gobiernonacional",
-    "3": "empresasnacionales",
-    "4": "empresasinternacionales",
-    "5": "organismosnogubernamentaleslocalesonacionales",
-    "6": "sociedadcivil",
-    "7": "otrosfinanciamientos"
+    "target_column": "financiamiento",
+    "output_column": "financb",
+    "values_dict": {
+      "1": "organismosorganizacionesinternacionales",
+      "2": "gobiernonacional",
+      "3": "empresasnacionales",
+      "4": "empresasinternacionales",
+      "5": "organismosnogubernamentaleslocalesonacionales",
+      "6": "sociedadcivil",
+      "7": "otrosfinanciamientos"
+    },
+    "other_value": 999999
   },
   "reto_dict": {
-    "1": "conseguirlafinanciacionnecesaria",
-    "2": "mejorarlacalidaddelosserviciosofrecidos",
-    "3": "ampliarymejorarlacolaboracionconotrasentidades",
-    "4": "mejorarlavisibilidaddeltrabajorealizado",
-    "5": "medirycomunicarelimpactosocialdelosserviciosprestados",
-    "6": "comunicacionconlosusuarios",
-    "7": "otroreto"
+    "target_column": "princ_reto",
+    "output_column": "princ_re_1",
+    "values_dict": {
+      "1": "conseguirlafinanciacionnecesaria",
+      "2": "mejorarlacalidaddelosserviciosofrecidos",
+      "3": "ampliarymejorarlacolaboracionconotrasentidades",
+      "4": "mejorarlavisibilidaddeltrabajorealizado",
+      "5": "medirycomunicarelimpactosocialdelosserviciosprestados",
+      "6": "comunicacionconlosusuarios",
+      "7": "otroreto"
+    },
+    "other_value": 999999
   },
   "idio_dict": {
-    "1": "espanol",
-    "2": "ingles",
-    "3": "creole",
-    "4": "portugues",
-    "5": "otroidioma",
-    "6": "frances"
+    "target_column": "idioma_ent",
+    "output_column": "idioma_e_1",
+    "values_dict": {
+      "1": "espanol",
+      "2": "ingles",
+      "3": "creole",
+      "4": "portugues",
+      "5": "otroidioma",
+      "6": "frances"
+    },
+    "other_value": 999999
   },
   "medio_dict": {
-    "1": "caraacara",
-    "2": "folletos",
-    "3": "infografiaeninstalacionesdelpunto",
-    "4": "mediosaudiovisuales",
-    "5": "redessocialeseinternet",
-    "6": "otromedio"
+    "target_column": "medios_bri",
+    "output_column": "medios_b_1",
+    "values_dict": {
+      "1": "caraacara",
+      "2": "folletos",
+      "3": "infografiaeninstalacionesdelpunto",
+      "4": "mediosaudiovisuales",
+      "5": "redessocialeseinternet",
+      "6": "otromedio"
+    },
+    "other_value": 999999
   }
 }

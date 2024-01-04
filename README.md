@@ -25,7 +25,7 @@ The steps are:
 2. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitorepss.py  {path/to/file} --output_path path/to/file --format csv
+python process_services.py  {path/to/file} --output_path path/to/file --format csv
 ```
 
 The options available:
@@ -51,7 +51,7 @@ The steps are:
 - **Example:**
 
 ```Bash
-python process_monitorepss.py --cara_path path/to/file --feedback_path path/to/file --output_path path/to/file --format csv
+python process_aurora.py --cara_path path/to/file --feedback_path path/to/file --output_path path/to/file --format csv
 ```
 
 The option available:
@@ -62,7 +62,7 @@ The option available:
 - `--output`: Output name or output path
 - `--format`: Output format if output path is given. Can either be `csv` or `json`.
 
-## `process_monitoreps`
+## `process_monitoreos`
 
 This script process data collected using Landbot. It uses three data sheets
 
@@ -76,7 +76,7 @@ The steps are:
 2. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitorepss.py --cara_path path/to/file --feedback_path path/to/file --monitero_path path/to/file --output_path path/to/file --format csv
+python process_monitoreos.py --cara_path path/to/file --feedback_path path/to/file --monitero_path path/to/file --output_path path/to/file --format csv
 ```
 
 The option available:

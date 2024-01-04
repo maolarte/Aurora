@@ -1,7 +1,8 @@
 import sys
-from pandas import merge, read_csv, concat
+from pandas import merge, read_csv
 from geopandas import read_file as read_geo_file
-from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates, addReverseGeocodedToDataFrame, processFieldCoordinates, toUnixTimestamp, dataFrameToGeoDataFrame
+from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates,  toUnixTimestamp
+from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame, processFieldCoordinates
 from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth, exportDataFrameToFile
 import os
 import fsspec
@@ -25,11 +26,8 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     aurora = merge(aurora_cara, aurora_feedback)
 
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
-    user_ids_to_remove = [311571598, 311398466, 311396734, 311361421, 311361350, 311361257, 311337494, 311325070,
-                          311325038, 311272934, 310820267, 310543580, 310357249, 310191611, 308421831, 306028996,
-                          310191611, 308421831, 306028996, 311725039, 311719001, 311718121, 311699383, 311696700,
-                          312179120, 311965863, 311965863, 316773170, 311440316, 313260546, 316563135, 316734459,
-                          317064115]
+    user_ids_to_remove = loadLocalJsonDoc(
+        os.path.join(working_dir, "defaults/test_user_ids"))
 
     for user_id in user_ids_to_remove:
         aurora = aurora.drop(aurora[aurora.UserId == user_id].index)

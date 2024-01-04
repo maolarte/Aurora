@@ -5,7 +5,8 @@ import numpy as np
 import os
 from google.cloud import bigquery
 
-from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, processMultValueColumns, processValueReplacement, capitaliseColumns, addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
+from modules.custom_functions import replaceOrganisation, loadLocalJsonDoc, toUnixTimestamp, processMultValueColumns, processValueReplacement, capitaliseColumns
+from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
 
 from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth, exportDataFrameToFile
 
@@ -33,7 +34,7 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
     common = services['nnanoacompanados'].isnull()
     common1 = services['nnaseparados'].isnull()
     condition = [(services['numeronna'] == 0) & (common)]
-    condition1 = [(services['numeronna'] == 0) & (common)]
+    condition1 = [(services['numeronna'] == 0) & (common1)]
     fill_with = ['no']
 
     services['nnanoacompanados'] = np.select(
@@ -82,90 +83,9 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
     services_carto = services_carto.drop("serviciosescasos", axis='columns')
 
     # serv_tipo (separating by pipe symbol and categorized with number)
-    codify_dict = loadLocalJsonDoc(os.path.join(
+    codify_dict: dict = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults/codification_dict.json"))
-    services_dict = codify_dict["services_dict"]
-
-    # re structure variable cuenta_con
-    cuenta_con_dict = codify_dict["cuenta_con_dict"]
-
-    # re structure variable children services (cual_serv1)
-    cual_serv1_dict = codify_dict["cual_serv1_dict"]
-
-    # re structure variable women services (cual_ser_2)
-    cual_ser_2_dict = codify_dict["cual_ser_2_dict"]
-
-    # re structure variable data storage (almacenamientoregistros)
-    registro_dict = codify_dict["registro_dict"]
-
-    # variable funding
-    financ_dict = codify_dict["financ_dict"]
-
-    #  variable challenges
-    reto_dict = codify_dict["reto_dict"]
-
-    # variable lenguages
-    idio_dict = codify_dict["idio_dict"]
-
-    # variable medios
-    medio_dict = codify_dict["medio_dict"]
-
-    values = [
-        {
-            "target_column": "serv_tipo",
-            "output_column": "serv_tipo1",
-            "values_dict": services_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "cuenta_con",
-            "output_column": "cuenta_c_1",
-            "values_dict": cuenta_con_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "cual_serv1",
-            "output_column": "cual_ser_1",
-            "values_dict": cual_serv1_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "cual_ser_2",
-            "output_column": "cual_ser_3",
-            "values_dict": cual_ser_2_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "almacenamientoregistros",
-            "output_column": "almacenamientoregistros_",
-            "values_dict": cual_ser_2_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "financiamiento",
-            "output_column": "financb",
-            "values_dict": financ_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "princ_reto",
-            "output_column": "princ_re_1",
-            "values_dict": reto_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "idioma_ent",
-            "output_column": "idioma_e_1",
-            "values_dict": idio_dict,
-            "other_value": defaultMissingValue
-        },
-        {
-            "target_column": "medios_bri",
-            "output_column": "medios_b_1",
-            "values_dict": medio_dict,
-            "other_value": defaultMissingValue
-        },
-    ]
+    codify_list = codify_dict.items()
 
     replace_lib = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults/value_replacements.json"))
@@ -180,7 +100,7 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
     services_carto["timeunix"] = services_carto["fecha"].apply(
         lambda x: toUnixTimestamp(time=x, format="%Y-%m-%d"))
 
-    output_df = processMultValueColumns(services_carto, values)
+    output_df = processMultValueColumns(services_carto, codify_list)
 
     token = os.environ.get("MAPBOX_TOKEN")
 

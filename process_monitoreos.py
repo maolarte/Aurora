@@ -1,8 +1,8 @@
 import sys
 from pandas import merge, read_csv, to_datetime, DataFrame, concat
-from geopandas import read_file as read_geo_file
-from modules.custom_functions import addReverseGeocodedToDataFrame, toUnixTimestampMultiFormatted, dataFrameToGeoDataFrame
-from modules.custom_io import useCartoAuth, uploadDataFrameToCarto, getCartoClient, exportDataFrameToFile
+from modules.custom_functions import toUnixTimestampMultiFormatted
+from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
+from modules.custom_io import useCartoAuth, uploadDataFrameToCarto, getCartoClient, exportDataFrameToFile, loadLocalJsonDoc
 from google.cloud import bigquery
 import os
 import fsspec
@@ -27,11 +27,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     aurora_comple = aurora.append(aurora_monitoreos)
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
 
-    user_ids_to_remove = [311571598, 311398466, 311396734, 311361421, 311361350, 311361257, 311337494, 311325070,
-                          311325038, 311272934, 310820267, 310543580, 310357249, 310191611, 308421831, 306028996,
-                          310191611, 308421831, 306028996, 311725039, 311719001, 311718121, 311699383, 311696700,
-                          312179120, 311965863, 311965863, 316773170, 311440316, 313260546, 316563135, 316734459,
-                          317064115]
+    user_ids_to_remove = loadLocalJsonDoc(
+        os.path.join(working_dir, "defaults/test_user_ids"))
 
     for user_id in user_ids_to_remove:
         aurora_comple = aurora_comple.drop(
@@ -72,7 +69,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     aurora_comple['Interaction_Sequence'] = aurora_comple.groupby(
         'UserId').cumcount() + 1
 
-    default_value = 999999
     # Rename variables
     newColumns = {
         "¿En qué país naciste?": 'e08_pais_',
@@ -118,13 +114,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
 
     # Rename the new column to 'max_seq'
     df = df.rename(columns={'Interaction_Sequence_max': 'max_seq'})
-    # adding coordinates value
-    country_data_path = "simplecache::https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
-
-    country_df = ""
-
-    with fsspec.open(country_data_path) as file:
-        country_df = read_geo_file(file)
 
     df['lon_eng'] = df['lon']
     df['lat_eng'] = df['lat']

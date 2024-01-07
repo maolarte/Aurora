@@ -28,7 +28,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
 
     user_ids_to_remove = loadLocalJsonDoc(
-        os.path.join(working_dir, "defaults/test_user_ids"))
+        os.path.join(working_dir, "defaults", "test_user_ids.json"))
 
     for user_id in user_ids_to_remove:
         aurora_comple = aurora_comple.drop(
@@ -97,7 +97,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
         'Latitud': 'lat',
         'Longitud': 'lon',
         'Inicio interacción': 'date',
-
     }
 
     df = df.rename(columns=newColumns)

@@ -1,5 +1,5 @@
 import sys
-from pandas import merge, read_csv
+from pandas import merge, read_csv, read_json
 from geopandas import read_file as read_geo_file
 from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates,  toUnixTimestamp
 from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame, processFieldCoordinates
@@ -27,7 +27,7 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
 
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
     user_ids_to_remove = loadLocalJsonDoc(
-        os.path.join(working_dir, "defaults/test_user_ids"))
+        os.path.join(working_dir, "defaults", "test_user_ids.json"))
 
     for user_id in user_ids_to_remove:
         aurora = aurora.drop(aurora[aurora.UserId == user_id].index)
@@ -40,7 +40,7 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     aurora = aurora[aurora['Latitud'] != "None"]
     # Rename variables to be consistent with the fist round exercise.
     newColumns = loadLocalJsonDoc(os.path.join(
-        working_dir, "defaults/aurora_column_name.json"))
+        working_dir, "defaults", "aurora_column_name.json"))
 
     aurora_carto = aurora.rename(columns=newColumns)
     # Adding coordinates of variables (país de nacimiento, país donde inicio el viaje and país donde vivía hace un año)
@@ -49,22 +49,17 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     )) + list(aurora_carto["e10_pais_"].unique()) + list(aurora_carto["e12_pais_"].unique()))) if type(x) == str]
 
     countries_dict = loadLocalJsonDoc(os.path.join(
-        working_dir, "defaults/countries_dict.json"))
+        working_dir, "defaults", "countries_dict.json"))
 
     available_countries = processCountries(available_countries, countries_dict)
 
-    # adding coordinates value
-    country_data_path = "simplecache::https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
-
-    country_df = ""
-
-    with fsspec.open(country_data_path) as file:
-        country_df = read_geo_file(file)
+    country_df = read_json(
+        path_or_buf="defaults/countries.json", orient='records')
 
     countriesWithCoordinates = getCountriesWithCoordinates(
         available_countries, country_df)
     country_column_dict = loadLocalJsonDoc(os.path.join(
-        working_dir, "defaults/country_column_dict.json"))
+        working_dir, "defaults", "country_column_dict.json"))
     aurora_carto = processFieldCoordinates(
         aurora_carto, country_column_dict, countriesWithCoordinates, countries_dict)
 

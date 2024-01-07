@@ -230,13 +230,13 @@ def processCountries(countries: list[str], valueDict: dict[str, str]):
     return output
 
 
-def getCountriesWithCoordinates(countries: list[str], geo_countries: gpd.GeoDataFrame):
+def getCountriesWithCoordinates(countries: list[str], geo_countries: DataFrame):
     output = {}
     for country in countries:
         try:
-            filtered_country = geo_countries[geo_countries["NAME"].str.lower(
+            filtered_country = geo_countries[geo_countries["name"].str.lower(
             ) == country].reindex()
-            centroidValue = (filtered_country.centroid).iloc[0]
+            centroidValue = filtered_country.iloc[0]
             output[country] = {"x": centroidValue.x, "y": centroidValue.y}
         except Exception as e:
             print(e)

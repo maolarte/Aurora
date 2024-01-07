@@ -92,7 +92,7 @@ The option available:
 
 The data processing scripts have two ways to handle the processed data, either export it as file (`csv` or `json`) and manually upload the file to Carto or upload direct to Carto Platform.
 
-#### **Manual Upload**
+1. **Manual Upload**
 
 You need to run a script adding the option `--output` which gives the output location for procesed data. By default the format will be in csv but you can also get json format by adding the `--format` option:
 

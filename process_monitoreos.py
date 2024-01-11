@@ -24,7 +24,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     aurora = merge(aurora_cara, aurora_feedback)
 
     # Adding the monitorings tables
-    aurora_comple = aurora.append(aurora_monitoreos)
+    aurora_comple = concat([aurora, aurora_monitoreos])
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
 
     user_ids_to_remove = loadLocalJsonDoc(
@@ -90,7 +90,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
                         "%d/%m/%Y %H:%M:%S.%f+00:00"]
 
     df["timeunix"] = df["Inicio interacción"].apply(
-        lambda x: toUnixTimestampMultiFormatted(time=x, formats=possible_formats))
+        lambda x: toUnixTimestampMultiFormatted(time=str(x), formats=possible_formats))
     # renaming variables
     newColumns = {
         'UserId': 'id',
@@ -122,7 +122,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     MAPBOX_TOKEN = os.environ.get("MAPBOX_TOKEN")
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
-    df = addReverseGeocodedToDataFrame(df, MAPBOX_TOKEN)
+    df = addReverseGeocodedToDataFrame(
+        df=df, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Monitoreo")
     # creating the structure of the variables pivoted
 
     df['lat_idx'] = 'lat_mon' + df['idx'].astype(str)
@@ -136,11 +137,10 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
 
     # Add the other columns
     additional_columns = ['timeunix',
-                          'country_name_eng', 'max_seq', 'country_code']
+                          'country_name', 'max_seq', 'country_code']
     reshape = merge(reshape, df.groupby(
         'id')[additional_columns].first().reset_index(), on='id')
 
-    print(reshape)
     # Create additional variables that were calculate in first round
     reshape['pais_fin'] = 999999
     reshape['dias'] = 999999
@@ -148,7 +148,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     newColumns = {
         'lat_mon0': 'lat_mon',
         'lon_mon0': 'lon_mon',
-        'country_place_name': 'country_name',
         'max_seq': 'max_interaction'
     }
 
@@ -182,9 +181,9 @@ parser = ArgumentParser()
 if __name__ == "__main__":
     parser.add_argument('--cara_path', type=str, required=True,
                         help="File location path for Aurora Characterization data")
-    parser.add_argument('--feedback_path', type=str, required=True,
+    parser.add_argument('--ayuda_path', type=str, required=True,
                         help="File location path for Aurora Feedback data")
-    parser.add_argument('--monitoreo_path', type=str, required=True,
+    parser.add_argument('--mon_path', type=str, required=True,
                         help="File location path for Aurora Monitoreo data")
     parser.add_argument('--destination', type=str,
                         help='Carto data warehouse endpoint')
@@ -197,8 +196,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cara_path = args.cara_path
-    feedback_path = args.feedback_path
-    monitoreo_path = args.monitoreo_path
+    ayuda_path = args.ayuda_path
+    mon_path = args.mon_path
     destination = args.destination
     output_path = args.output
     output_format = args.format
@@ -207,11 +206,11 @@ if __name__ == "__main__":
         print("Please add both Characterization data path")
         sys.exit()
 
-    if (not bool(feedback_path)):
+    if (not bool(ayuda_path)):
         print("Please add both Feedback data path")
         sys.exit()
 
-    if (not bool(monitoreo_path)):
+    if (not bool(mon_path)):
         print("Please add both Monitoring data path")
         sys.exit()
 
@@ -219,5 +218,5 @@ if __name__ == "__main__":
         print("Print add at least one output method")
         sys.exit()
 
-    main(cara_path=cara_path, feedback_path=feedback_path, monitoreo_path=monitoreo_path, destination=destination,
+    main(cara_path=cara_path, feedback_path=ayuda_path, monitoreo_path=mon_path, destination=destination,
          output_path=output_path, output_format=output_format)

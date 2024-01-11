@@ -40,7 +40,9 @@ def processGeocodeData(data):
         _id: str = feature['id']
         id = _id.split(".")[0]
         output[f"{id}_text"] = feature["text"]
-        output[f"{id}_place_name"] = feature["place_name"]
+        output[f"{id}_name"] = feature["place_name"]
+        if (id == "country"):
+            output["country_code"] = feature["properties"]["short_code"]
     return output
 
 

@@ -34,6 +34,9 @@ def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]]
 
 
 def processGeocodeData(data):
+    """
+    return extracted properties from results of reverse geocoding
+    """
     features = data['features']
     output = {}
     for feature in features:
@@ -47,6 +50,9 @@ def processGeocodeData(data):
 
 
 def getMapboxGeocoder(token: str):
+    """
+    return a mapbox geocoder object
+    """
     if (token):
         return Geocoder(access_token=token)
     else:
@@ -54,6 +60,9 @@ def getMapboxGeocoder(token: str):
 
 
 def reverseGeocode(longitude: int, latitude: int, token: str):
+    """
+    return reverse geocoded data from coordinates using mapbox api
+    """
     mb_geocoder = getMapboxGeocoder(token)
     response = mb_geocoder.reverse(lat=latitude, lon=longitude)
     if (response.status_code == 200):
@@ -63,37 +72,41 @@ def reverseGeocode(longitude: int, latitude: int, token: str):
         return None
 
 
-def processReverseGeoding(data: list[tuple[int, int]], token: str, name: str):
+def processReverseGeoding(data: list[tuple[int, int, int]], token: str, name: str):
+    """
+    return list of objects with geo-administrative properties
+    """
     _output = []
     pbar = getProgressIndicator(
         data=data, desc=f"Processing Reverse Geocoding {name}", size=7, unit="coords")
-    for lon, lat in data:
+    for id, lon, lat in data:
         try:
             result = reverseGeocode(lon, lat, token)
             _decoded = processGeocodeData(result)
+            _decoded['id'] = id
             _output.append(_decoded)
             pbar.update(1)
-            sleep(0.1)
+            # sleep(0.1)
 
         except Exception as e:
             print(e)
-            _output.append([])
+            _output.append({"id": id})
 
     return _output
 
 
-def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: str, token: str, name: str):
+def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: str, token: str, name: str, id="objectid"):
     """
     Takes in a DataFrame with longitude and latitude to produce new fields containing geo-administrative attributes
 
     """
     local_df = deepcopy(df)
-    coordinates = list(zip(list(local_df[lon_column].astype(float).to_list()), list(
+    coordinates = list(zip(list(local_df[id].to_list()), list(local_df[lon_column].astype(float).to_list()), list(
         local_df[lat_column].astype(float).to_list())))
     reversed_geocoded = processReverseGeoding(coordinates, token, name)
     reversed_geocoded_df = DataFrame(reversed_geocoded)
-    output = concat([local_df, reversed_geocoded_df],
-                    axis=1).fillna(default_missing_value)
+    output = concat([local_df.set_index(id), reversed_geocoded_df.set_index("id")],
+                    axis=1).reset_index(names=[id])
     return output
 
 

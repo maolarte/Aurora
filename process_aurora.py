@@ -32,13 +32,10 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     for user_id in user_ids_to_remove:
         aurora = aurora.drop(aurora[aurora.UserId == user_id].index)
 
-    # Filtering by geographical errors, informed consent and first connections by QR
+    # Filtering by geographical errors and informed consent
     aurora = aurora[aurora['Consentimiento'] != 'NO']
-    # has to be analized if we include these observations or not
-    aurora = aurora[aurora['¿Cómo interactúa con el sistema?']
-                    != 'QR-Enganche']
     aurora = aurora[aurora['Latitud'] != "None"]
-    # Rename variables to be consistent with the fist round exercise.
+    # Rename variables to be consistent with the first round exercise.
     newColumns = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults", "aurora_column_name.json"))
 

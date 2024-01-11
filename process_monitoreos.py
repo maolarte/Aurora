@@ -123,7 +123,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
     df = addReverseGeocodedToDataFrame(
-        df=df, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Monitoreo")
+        df=df, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Monitoreo", id="id")
     # creating the structure of the variables pivoted
 
     df['lat_idx'] = 'lat_mon' + df['idx'].astype(str)

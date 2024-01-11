@@ -76,37 +76,42 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
     aurora_carto = addReverseGeocodedToDataFrame(
-    df=aurora_carto, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Auora")
-    
-    ## After checking some coordinates, especially in country borders where info was collected, and using some extra info as the name collector, there are some country names that were changed
-    # This was did for Chile and Colombia 
+        df=aurora_carto, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Auora")
+
+    # After checking some coordinates, especially in country borders where info was collected, and using some extra info as the name collector, there are some country names that were changed
+    # This was did for Chile and Colombia
     # Colombia
     user_ids_col = loadLocalJsonDoc(
         os.path.join(working_dir, "defaults", "user_ids_col.json"))
-    condition_eng= '¿Cómo interactúa con el sistema?'
+    condition_eng = '¿Cómo interactúa con el sistema?'
     condition_value = 'Enganche'
     new_country_value = 'Colombia'
-    condition_col = (aurora_carto['objectid'].isin(user_ids_col)) & (aurora_carto[condition_eng] == condition_value)
+    condition_col = (aurora_carto['objectid'].isin(user_ids_col)) & (
+        aurora_carto[condition_eng] == condition_value)
     # Use the loc method to update the 'country_name' column
     aurora_carto.loc[condition_col, 'country_name'] = new_country_value
-   
+
    # Chile
     user_ids_ch = loadLocalJsonDoc(
         os.path.join(working_dir, "defaults", "user_ids_ch.json"))
     new_country_value1 = 'Chile'
-    condition1 = (aurora_carto['objectid'].isin(user_ids_ch)) & (aurora_carto[condition_eng] == condition_value)
+    condition1 = (aurora_carto['objectid'].isin(user_ids_ch)) & (
+        aurora_carto[condition_eng] == condition_value)
     # Use the loc method to update the 'country_name' column
     aurora_carto.loc[condition1, 'country_name'] = new_country_value1
 
     # Fix the coordinates of the rows changed before (lines 84-95) that did not has coordinates (1 observation Chile, 2 Colombia)
-    aurora_carto.loc[aurora_carto['objectid'] == 313172106 , 'lat'] = -18.475525
-    aurora_carto.loc[aurora_carto['objectid'] == 313172106 , 'lon'] = -70.3137029
+    aurora_carto.loc[aurora_carto['objectid'] == 313172106, 'lat'] = -18.475525
+    aurora_carto.loc[aurora_carto['objectid']
+                     == 313172106, 'lon'] = -70.3137029
 
-    aurora_carto.loc[aurora_carto['objectid'] == 320582739 , 'lat'] = 8.42152826
-    aurora_carto.loc[aurora_carto['objectid'] == 320582739 , 'lon'] = -76.78180133
+    aurora_carto.loc[aurora_carto['objectid'] == 320582739, 'lat'] = 8.42152826
+    aurora_carto.loc[aurora_carto['objectid']
+                     == 320582739, 'lon'] = -76.78180133
 
-    aurora_carto.loc[aurora_carto['objectid'] == 325857664 , 'lat'] = 8.42152826
-    aurora_carto.loc[aurora_carto['objectid'] == 325857664 , 'lon'] = -76.78180133
+    aurora_carto.loc[aurora_carto['objectid'] == 325857664, 'lat'] = 8.42152826
+    aurora_carto.loc[aurora_carto['objectid']
+                     == 325857664, 'lon'] = -76.78180133
 
     # filling missing values
     # should be done at the very end

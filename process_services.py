@@ -106,7 +106,7 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
 
     # add geo-administrative attributes
     output_df = addReverseGeocodedToDataFrame(
-        output_df, lon_column="longitude", lat_column="latitude", token=token, name="Service data")
+        output_df, lon_column="longitude", lat_column="latitude", token=token, name="Service data", id="id")
 
     # Fill  missing values
     output_df = output_df.fillna(defaultMissingValue)

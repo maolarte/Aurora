@@ -101,6 +101,7 @@ def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: st
 
     """
     local_df = deepcopy(df)
+    print(local_df[lon_column])
     coordinates = list(zip(list(local_df[id].to_list()), list(local_df[lon_column].astype(float).to_list()), list(
         local_df[lat_column].astype(float).to_list())))
     reversed_geocoded = processReverseGeoding(coordinates, token, name)

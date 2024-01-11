@@ -37,7 +37,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_services.py  {path/to/file} --output_path path/to/file --format csv
+python process_services.py  {path/to/file} --output path/to/file --format csv
 ```
 
 The options available:
@@ -50,7 +50,7 @@ The options available:
 **Example:**
 
 ```Bash
-python process_aurora.py ~/Caracterización_de_punto_de_servicio_-_Aurora_Office_-_Ronda_2_-_all_versions_-_False_-_2023-11-28-13-59-47.csv --output_path ~/services_round_2 --format csv
+python process_services.py ~/Caracterización_de_punto_de_servicio_-_Aurora_Office_-_Ronda_2_-_all_versions_-_False_-_2023-11-28-13-59-47.csv --output ~/services_round_2 --format csv
 ```
 
 ### `process_aurora`
@@ -71,7 +71,7 @@ The steps are:
 3. Run the script in your terminal.
 
 ```Bash
-python process_aurora.py --cara_path path/to/file --ayuda_path path/to/file --output_path path/to/file --format csv
+python process_aurora.py --cara_path path/to/file --ayuda_path path/to/file --output path/to/file --format csv
 ```
 
 The option available:
@@ -85,7 +85,7 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --output_path path/to/file --format csv
+python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --output services_round_2 --format csv
 ```
 
 ## `process_monitoreos`
@@ -102,7 +102,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output_path path/to/file --format csv
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output aurora_round_2 --format csv
 ```
 
 The option available:
@@ -117,7 +117,7 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output_path path/to/file --format csv
+python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output aurora_monitoring_around_2 --format csv
 ```
 
 ### How to load data to Carto Data Warehouse
@@ -143,5 +143,5 @@ You can also upload the data directly to carto data warehouse. You can use `--de
 **Example:**
 
 ```Bash
-python process_service.py ~/raw_data.csv --destination qualified_table_name
+python process_service.py ~/raw_data.csv --destination carto-dw-ac-4v8fnfsh.shared.test
 ```

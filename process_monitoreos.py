@@ -51,7 +51,13 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     # filering by consent, cleaning geographical variables that are equal to "None" and drop the ones that can't identify
     # the zone of first connection
     aurora_comple = aurora_comple[aurora_comple['Consentimiento'] != 'NO']
-    aurora_comple = aurora_comple[aurora_comple['Latitud'] != "None"]
+
+    # Filtered out entries with out coordinates
+    latitude_test = aurora_comple['Latitud'].fillna(999999).astype(str).str.replace(
+        "-", "").str.replace(".", "").str.isnumeric()
+    longitude_test = aurora_comple['Longitud'].fillna(999999).astype(str).str.replace(
+        "-", "").str.replace(".", "").str.isnumeric()
+    aurora_comple = aurora_comple[latitude_test & longitude_test]
     # Dropping duplicates of monitorings (same answers differents days)
     columns_to_consider = [col for col in aurora_comple.columns if col not in [
         'Inicio interacción', 'InteraID']]

@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 from pandas import merge, read_csv, to_datetime, DataFrame, concat
 from modules.custom_functions import toUnixTimestampMultiFormatted
 from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame
@@ -23,8 +24,9 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
     # Merge tables of first connection
     aurora = merge(aurora_cara, aurora_feedback)
 
-    # Adding the monitorings tables
-    aurora_comple = concat([aurora, aurora_monitoreos])
+    #Adding the monitorings tables
+    aurora_comple = pd.concat([aurora, aurora_monitoreos], ignore_index=True)
+    
     # Drop observations of Aurora team phones, test registers and geographical atypical rows
 
     user_ids_to_remove = loadLocalJsonDoc(
@@ -34,9 +36,10 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
         aurora_comple = aurora_comple.drop(
             aurora_comple[aurora_comple.UserId == user_id].index)
 
-    # Variable of date in date format (for generating panel data)
-    aurora_comple["fecha"] = to_datetime(
-        aurora_comple["Inicio interacción"], format='%Y-%m-%d %H:%M:%S', errors='coerce', utc=True).dt.strftime('%Y-%m-%d')
+   #Variable of date in date format (for generating panel data)
+    aurora_comple["fecha"] = pd.to_datetime(
+    aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
+    aurora_comple.loc[aurora_comple['fecha']=='2023-05-11', 'fecha'] = "2023-11-05"
 
     # Filling all observations of the same ID with the variable consent and actual country (variables of first connection)
     aurora_comple['País actual'] = aurora_comple.groupby(
@@ -146,6 +149,19 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, destination: s
                           'country_name', 'max_seq', 'country_code']
     reshape = merge(reshape, df.groupby(
         'id')[additional_columns].first().reset_index(), on='id')
+    
+    # Fix coordinates of rows identified (1 observation Chile, 2 Colombia - lines )
+    reshape.loc[reshape['id'] == 313172106, 'lat'] = -18.475525
+    reshape.loc[reshape['id']
+                     == 313172106, 'lon'] = -70.3137029
+
+    reshape.loc[reshape['id'] == 320582739, 'lat'] = 8.42152826
+    reshape.loc[reshape['id']
+                     == 320582739, 'lon'] = -76.78180133
+
+    reshape.loc[reshape['id'] == 325857664, 'lat'] = 8.42152826
+    reshape.loc[reshape['id']
+                     == 325857664, 'lon'] = -76.78180133
 
     # Create additional variables that were calculate in first round
     reshape['pais_fin'] = 999999

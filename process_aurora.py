@@ -97,7 +97,7 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     # Use the loc method to update the 'country_name' column
     aurora_carto.loc[condition1, 'country_name'] = new_country_value1
 
-    # Fix the coordinates of the rows changed before (lines 84-95) that did not has coordinates (1 observation Chile, 2 Colombia)
+    # Fix the coordinates of the rows changed before (lines 78-98) that did not has coordinates (1 observation Chile, 2 Colombia)
     aurora_carto.loc[aurora_carto['objectid'] == 313172106, 'lat'] = -18.475525
     aurora_carto.loc[aurora_carto['objectid']
                      == 313172106, 'lon'] = -70.3137029
@@ -109,6 +109,9 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     aurora_carto.loc[aurora_carto['objectid'] == 325857664, 'lat'] = 8.42152826
     aurora_carto.loc[aurora_carto['objectid']
                      == 325857664, 'lon'] = -76.78180133
+    
+    aurora_carto.loc[aurora_carto['objectid']==317308056, 'country_name'] = "Colombia"
+    aurora_carto.loc[aurora_carto['objectid']==319708059, 'country_name'] = "Chile"
 
     # filling missing values
     # should be done at the very end

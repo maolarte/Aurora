@@ -230,21 +230,6 @@ def processCountries(countries: list[str], valueDict: dict[str, str]):
     return output
 
 
-def getCountriesWithCoordinates(countries: list[str], geo_countries: DataFrame):
-    output = {}
-    for country in countries:
-        try:
-            filtered_country = geo_countries[geo_countries["name"].str.lower(
-            ) == country].reindex()
-            centroidValue = filtered_country.iloc[0]
-            output[country] = {"x": centroidValue.x, "y": centroidValue.y}
-        except Exception as e:
-            print(e)
-            output[country] = {"x": default_value, "y": default_value}
-
-    return output
-
-
 def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
     start = datetime(1970, 1, 1)
     target = datetime.strptime(time, format)

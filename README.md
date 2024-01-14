@@ -145,3 +145,8 @@ You can also upload the data directly to carto data warehouse. You can use `--de
 ```Bash
 python process_service.py ~/raw_data.csv --destination carto-dw-ac-4v8fnfsh.shared.test
 ```
+
+## Other Documentation
+
+- [`Modules`](/modules/README.md): Directory of custom functions which are used in scripts.
+- [`Defaults`](/defaults//README.md): Directory of JSON objects of constant values that which are used in scripts.

@@ -1,11 +1,9 @@
 import sys
 from pandas import merge, read_csv, read_json
-from geopandas import read_file as read_geo_file
-from modules.custom_functions import loadLocalJsonDoc, processCountries, getCountriesWithCoordinates,  toUnixTimestamp
-from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame, processFieldCoordinates
+from modules.custom_functions import loadLocalJsonDoc, processCountries,  toUnixTimestamp
+from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame, processFieldCoordinates, getCountriesWithCoordinates
 from modules.custom_io import uploadDataFrameToCarto, getCartoClient, useCartoAuth, exportDataFrameToFile
 import os
-import fsspec
 from google.cloud import bigquery
 from argparse import ArgumentParser
 
@@ -109,9 +107,11 @@ def main(cara_path: str, feedback_path: str, destination: str = "", output_path:
     aurora_carto.loc[aurora_carto['objectid'] == 325857664, 'lat'] = 8.42152826
     aurora_carto.loc[aurora_carto['objectid']
                      == 325857664, 'lon'] = -76.78180133
-    
-    aurora_carto.loc[aurora_carto['objectid']==317308056, 'country_name'] = "Colombia"
-    aurora_carto.loc[aurora_carto['objectid']==319708059, 'country_name'] = "Chile"
+
+    aurora_carto.loc[aurora_carto['objectid'] ==
+                     317308056, 'country_name'] = "Colombia"
+    aurora_carto.loc[aurora_carto['objectid']
+                     == 319708059, 'country_name'] = "Chile"
 
     # filling missing values
     # should be done at the very end

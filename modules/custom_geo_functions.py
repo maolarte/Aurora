@@ -1,10 +1,9 @@
 import sys
 from pandas import Series
-from geopandas import GeoSeries
+from geopandas import GeoSeries, GeoDataFrame
 from pandas import DataFrame, Series, concat
 from geopandas import GeoDataFrame
 from copy import deepcopy
-from time import sleep
 from shapely.geometry import Point
 from .custom_functions import changeCountriesByExpression, getProgressIndicator
 
@@ -14,7 +13,26 @@ from mapbox import Geocoder
 default_missing_value = 999999
 
 
+def getCountriesWithCoordinates(countries: list[str], geo_countries: DataFrame):
+    output = {}
+    for country in countries:
+        try:
+            filtered_country = geo_countries[geo_countries["name"].str.lower(
+            ) == country].reindex()
+            centroidValue = filtered_country.iloc[0]
+            output[country] = {"x": centroidValue.x, "y": centroidValue.y}
+        except Exception as e:
+            print(e, "not associated with", country)
+            output[country] = {"x": default_missing_value,
+                               "y": default_missing_value}
+
+    return output
+
+
 def getCoordinate(value: str, side: str, valueDict: dict[str, tuple[int, int]], expressionDict: dict[str, str]):
+    """
+    return coordinate from dictionary as related to input value.
+    """
     try:
         country = changeCountriesByExpression(value, expressionDict)
         return valueDict[country][side]
@@ -23,6 +41,9 @@ def getCoordinate(value: str, side: str, valueDict: dict[str, tuple[int, int]], 
 
 
 def processFieldCoordinates(df: DataFrame, columnDict: dict[str, dict[str, str]], valueDict: dict[str, tuple[int, int]], expressionDict: dict[str, str]):
+    """
+    return a dataframe with coordinates fields retrieved from a coordinates dictionary.
+    """
     local_df = deepcopy(df)
     for column in columnDict.keys():
         local_df[columnDict[column]["x"]] = local_df[column].str.lower().apply(
@@ -97,7 +118,7 @@ def processReverseGeoding(data: list[tuple[int, int, int]], token: str, name: st
 
 def addReverseGeocodedToDataFrame(df: DataFrame, lon_column: str, lat_column: str, token: str, name: str, id="objectid"):
     """
-    Takes in a DataFrame with longitude and latitude to produce new fields containing geo-administrative attributes
+    return dataframe with geo-administrative attributes fields as related longitude and latitude of each row.
 
     """
     local_df = deepcopy(df)

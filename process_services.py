@@ -85,7 +85,6 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
     # serv_tipo (separating by pipe symbol and categorized with number)
     codify_dict: dict = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults/codification_dict.json"))
-    codify_list = codify_dict.items()
 
     replace_lib = loadLocalJsonDoc(os.path.join(
         working_dir, "defaults/value_replacements.json"))
@@ -100,7 +99,7 @@ def main(raw_data: str, destination: str = "", output_path: str = "", output_for
     services_carto["timeunix"] = services_carto["fecha"].apply(
         lambda x: toUnixTimestamp(time=x, format="%Y-%m-%d"))
 
-    output_df = processMultValueColumns(services_carto, codify_list)
+    output_df = processMultValueColumns(services_carto, codify_dict)
 
     token = os.environ.get("MAPBOX_TOKEN")
 

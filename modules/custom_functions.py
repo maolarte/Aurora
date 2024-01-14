@@ -111,20 +111,21 @@ def processColumn(dfColumn: Series, values_dict: dict[int, str], other_value: st
     return dfColumn.apply(lambda x: codifyServices(x, reversed_values_dict, other_value))
 
 
-def processMultValueColumns(df: DataFrame, columnObjectsList: list[dict]):
+def processMultValueColumns(df: DataFrame, columnObjectsList: dict[dict]):
     """
     df: DataFrame object
-    columnsObjectsList: list of column object
+    columnsObjectsList: dictionary of column object
     columnObject: dictionary {"target_column": str, "output_column": str, values_dict: dict, other_value: str}
 
     return DataFrame Object
     """
     for columnObject in columnObjectsList:
         try:
-            target_column = columnObject["target_column"]
-            output_column = columnObject["output_column"]
-            values_dict = columnObject["values_dict"]
-            other_value = str(columnObject["other_value"])
+            current = columnObjectsList[columnObject]
+            target_column = current["target_column"]
+            output_column = current["output_column"]
+            values_dict = current["values_dict"]
+            other_value = str(current["other_value"])
             df[output_column] = processColumn(
                 df[target_column], values_dict, other_value)
         except Exception as e:

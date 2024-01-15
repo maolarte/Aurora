@@ -1,25 +1,18 @@
-from pandas import DataFrame, Series, concat
-from geopandas import GeoDataFrame
+from pandas import DataFrame, Series
 from copy import deepcopy
 from datetime import datetime, timezone
 import json
 import re
-import geopandas as gpd
-from time import sleep
 from tqdm import tqdm
-from shapely.geometry import Point
 
-# Mapbox
-from mapbox import Geocoder
-
-default_value = 999999
+default_missing_value = 999999
 
 
 def getProgressIndicator(data: iter, desc: str, size: int, unit: str):
     """
     Shows progressing of a looping function.
     """
-    return tqdm(total=len(data), desc=desc)
+    return tqdm(total=len(data), desc=desc, size=size, unit=unit)
 
 
 def loadLocalJsonDoc(filepath, dataProp=''):
@@ -107,6 +100,9 @@ def codifyServices(value: str, values_dict: dict[str, int], otherValue: str):
 
 
 def processColumn(dfColumn: Series, values_dict: dict[int, str], other_value: str):
+    """
+    return a column that has processed codified values
+    """
     reversed_values_dict = dict([(x[1], x[0]) for x in values_dict.items()])
     return dfColumn.apply(lambda x: codifyServices(x, reversed_values_dict, other_value))
 
@@ -155,6 +151,9 @@ def exportToFile(df: DataFrame, fileType: str, exportName: str):
 
 
 def valueLabelChange(value: str, values_dict: dict[str, str], otherValue: str):
+    """
+    return value replaced with a value in a dictonary.
+    """
     if (type(value) == float):
         return otherValue
 
@@ -168,6 +167,9 @@ def valueLabelChange(value: str, values_dict: dict[str, str], otherValue: str):
 
 
 def processValueReplacement(df: DataFrame, replace_dict: dict[str, dict[str, str]]):
+    """
+    return DataFrame with some values replaced using a dictonary
+    """
     local_df = deepcopy(df)
     columns = list(replace_dict.keys())
 
@@ -179,6 +181,9 @@ def processValueReplacement(df: DataFrame, replace_dict: dict[str, dict[str, str
 
 
 def capitaliseColumns(df: DataFrame, columns: list[str]):
+    """
+    return DataFrame with column values that have been capitalised.
+    """
     local_df = deepcopy(df)
     for col in columns:
         try:
@@ -209,17 +214,22 @@ def replaceOrganisation(df: DataFrame, value: str, col1: str, col2: str):
     return local_df
 
 
-def changeCountriesByExpression(country, valueDict: dict[str, str]):
-    output = ""
+def changeCountriesByExpression(country: str, valueDict: dict[str, str]):
+    """
+    return a country name value after being testing through an expresion
+    """
     for key, value in valueDict.items():
         match = re.match(r"^"+key+r".$", country)
         if (match):
             return value
 
-    return output if len(output) else country
+    return country
 
 
 def processCountries(countries: list[str], valueDict: dict[str, str]):
+    """
+    return list of country name that some of which will be replaced by using a dictionary
+    """
     output = []
     for country in countries:
         try:
@@ -227,11 +237,14 @@ def processCountries(countries: list[str], valueDict: dict[str, str]):
                 country=country, valueDict=valueDict)
             output.append(new_country)
         except Exception as e:
-            output.append(default_value)
+            output.append(default_missing_value)
     return output
 
 
 def toUnixTimestamp(time, format: str = "%d/%m/%Y"):
+    """
+    return number in unixtime after parsing a date string
+    """
     start = datetime(1970, 1, 1)
     target = datetime.strptime(time, format)
     in_seconds = (target - start).total_seconds()

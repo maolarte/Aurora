@@ -12,7 +12,7 @@ def getProgressIndicator(data: iter, desc: str, size: int, unit: str):
     """
     Shows progressing of a looping function.
     """
-    return tqdm(total=len(data), desc=desc, size=size, unit=unit)
+    return tqdm(total=len(data), desc=desc)
 
 
 def loadLocalJsonDoc(filepath, dataProp=''):

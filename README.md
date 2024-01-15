@@ -4,7 +4,14 @@
 
 Make sure you have install `python3.10`.
 
-The script also use Mapbox platform for some geoprocessing, as such a register a mapbox account and generate a token as shown in these [instructions](https://docs.mapbox.com/help/getting-started/).
+## Enviromental Variables
+
+**Mapbox Access Token:**
+The script also use Mapbox platform for some geoprocessing, to acquire the token doing the following:
+
+1. Register a mapbox account: [Link](https://account.mapbox.com/auth/signup/).
+2. Go to the access tokens management page: [Link](https://account.mapbox.com/access-tokens/)
+3. Copy either the default access token or generate a specific token as shown in these [instructions](https://docs.mapbox.com/help/getting-started/access-tokens/).
 
 After acquiring the access token, add it as part of your environmental variables:
 

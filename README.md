@@ -92,7 +92,7 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --output services_round_2 --format csv
+python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --output ~/aurora_round_2 --format csv
 ```
 
 ## `process_monitoreos`
@@ -109,7 +109,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output aurora_round_2 --format csv
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output ~/aurora_round_2_31102023 --format csv
 ```
 
 The option available:
@@ -156,4 +156,4 @@ python process_service.py ~/raw_data.csv --destination carto-dw-ac-4v8fnfsh.shar
 ## Other Documentation
 
 - [`Modules`](/modules/README.md): Directory of custom functions which are used in scripts.
-- [`Defaults`](/defaults//README.md): Directory of JSON objects of constant values that which are used in scripts.
+- [`Defaults`](/defaults/README.md): Directory of JSON objects of constant values that which are used in scripts.

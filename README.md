@@ -127,6 +127,44 @@ The option available:
 python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output aurora_monitoring_around_2 --format csv
 ```
 
+## `process_feedback`
+
+The first part of this script is similar to "process_monitoreos"; however, while process_monitoreos was thinking to generate the structure of geographical variables for Caro map, this script is focus on the generation of a complete data base and the necessary transformations for feedback pages in Carto.  
+
+The steps are:
+
+1. Make sure the required packages are install.
+2. Retrieve data from google drive folder. The google sheet document named: `Aurora v2.1 data file`. Export the required sheets which include:
+
+   - **caracterización** export in csv as `Aurora v2.1 data file - caracterización.csv`
+   - **ayudaHumanitaria** export in csv as `Aurora v2.1 data file - ayudaHumanitaria.csv`
+   - **monitoreo** export in csv as `Aurora v2.1 data file - monitoreo.csv`
+   - **info** export in csv as `Aurora v2.1 data file - solicitudInformación.csv`
+
+3. Run the script in your terminal. The following option are available:
+
+```Bash
+python process_feedback.py --cara_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - caracterización.csv" --ayuda_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - monitoreo.csv" --info_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - solicitudInformación.csv" --destination "C:\Users\maola\Desktop\Code"  --output "feedback, feedback_nna" --format csv
+```
+
+The option available:
+
+- **--cara_path:** File location path for Aurora Characterization data in csv format
+- **--ayuda_path:** File location path for Aurora Feedback data in csv format
+- **--mon_path:** File location path for Aurora Monitoring data in csv format
+- **--info_path:** File location path for Aurora Information selection from migrants data   in csv format
+- **--destination:** Carto data warehouse endpoint
+- **--output:** Output name or output path (separated by comma)
+- **--format:** Output format if output path is given. Can either be `csv` or `json`.
+
+**Example:**
+
+```Bash
+python process_feedback.py --cara_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - caracterización.csv" --ayuda_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - monitoreo.csv" --info_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - solicitudInformación.csv" --destination "C:\Users\maola\Desktop\Code"  --output "feedback, feedback_nna" --format csv
+```
+
+This script generates files needed in Carto (feedback) and the complete base with all variables
+
 ### How to load data to Carto Data Warehouse
 
 The data processing scripts have two ways to handle the processed data, either export it as file (`csv` or `json`) and manually upload the file to Carto or upload direct to Carto Platform.

@@ -4,9 +4,11 @@ from pandas import merge, read_csv, read_json
 from modules.custom_geo_functions import addReverseGeocodedToDataFrame, dataFrameToGeoDataFrame, processFieldCoordinates, getCountriesWithCoordinates
 from modules.custom_io import useCartoAuth, uploadDataFrameToCarto, getCartoClient, exportDataFrameToFile, loadLocalJsonDoc
 from modules.custom_functions import toUnixTimestamp, processCountries
+from modules.custom_functions import toUnixTimestampMultiFormatted
 from google.cloud import bigquery
 import os
 from argparse import ArgumentParser
+from datetime import datetime
 
 
 def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str, destinations: str = "", output_paths: str = "", output_format: str = "csv"):
@@ -42,7 +44,12 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
    # Variable of date in date format (for generating panel data)
     aurora_comple["fecha"] = pd.to_datetime(
         aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
-    # fixing the format of nov 5th 2023 (monitorings) is diferrent fron the rest of days
+   
+   #Variable of date in date format (for generating panel data)
+    aurora_comple["fecha"] = pd.to_datetime(
+    aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
+
+    # fixing the format of nov 5th 2023 (monitorings) is different fron the rest of days
     aurora_comple.loc[aurora_comple['fecha'] ==
                       '2023-05-11', 'fecha'] = "2023-11-05"
 
@@ -59,9 +66,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         'UserId')['Género'].transform('first')
     aurora_comple['Hay niños, niñas o adolescentes'] = aurora_comple.groupby(
         'UserId')['Hay niños, niñas o adolescentes'].transform('first')
-    # When you join 'Enganche' field is missing
-    # aurora_comple['Enganche'] = aurora_comple.groupby(
-    #     'UserId')['Enganche'].transform('first')
 
     # filering by consent, cleaning geographical variables that are equal to "None" and drop the ones that can't identify
     # the zone of first connection
@@ -128,12 +132,16 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     aurora_comple['latitude'] = aurora_comple['Latitud']
     # Create the variable time
     # the format was missing other elements thus the timestring was not parsing
+    possible_formats = ["%Y-%m-%d %H:%M:%S.%f+00:00",
+                        "%d/%m/%Y %H:%M:%S.%f+00:00"]
     aurora_comple["timeunix"] = aurora_comple["Inicio interacción"].apply(
-        lambda x: toUnixTimestamp(x, '%Y-%m-%d %H:%M:%S.%f+00:00'))
+        lambda x: toUnixTimestampMultiFormatted(time=str(x), formats=possible_formats))
+
     # Adding coordinates of variables (país de nacimiento, país donde inicio el viaje and país donde vivía hace un año)
     MAPBOX_TOKEN = os.environ.get("MAPBOX_TOKEN")
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
+    aurora_comple['objectid']=aurora_comple['UserId']
     aurora_comple = addReverseGeocodedToDataFrame(
         df=aurora_comple, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Auora")
 
@@ -177,7 +185,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     aurora_comple.loc[aurora_comple['UserId']
                       == 319708059, 'country_name'] = "Chile"
 
-    excel_file = 'completa.xlsx'  # integrate
+    excel_file = 'completa.xlsx'  
     aurora_comple.to_excel(excel_file, index=False)
 
 # Dataset of general feedback
@@ -229,7 +237,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         if value == "SI":
             return 1
         elif value == "NO":
-            return 2
+            return 3
         else:
             return value
 
@@ -307,8 +315,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     if (feedback_output_path):
         exportDataFrameToFile(df=df1, fileType=output_format,
                               exportName=feedback_output_path)
-
-    # df1.to_csv('feedback.csv', index=False)  # integrate
 
     # Children's services feedback
 
@@ -392,7 +398,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         lambda x: satMap(x))
 
     feedback_nna_output_path = output_paths.split(",")[-1]
-    # df2.to_csv(output_paths[-1], index=False)  # integrate
 
     if (feedback_nna_output_path):
         exportDataFrameToFile(df=df2, fileType=output_format,

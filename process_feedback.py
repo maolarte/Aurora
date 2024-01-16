@@ -228,11 +228,10 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
 
     df1 = df.explode(['Ayuda', 'Acceso', 'Satisfaccion', 'Recomendacion'])
 
-    df1['m12'] = df1['Ayuda']
     df1['m14'] = df1['Acceso']
     df1['m15'] = df1['Satisfaccion']
 
-    # Change the variable of recomendation to be numeric, as the others
+    # Change the variable of recomendation to be numeric, as the others using the values of first round
     def change_variable_value(value):
         if value == "SI":
             return 1
@@ -260,7 +259,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         12: "Transporte humanitario",
         13: "Otra"
     }
-
+    
     def necesidadMap(value):
         try:
 
@@ -272,6 +271,41 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return value
 
     df1['Ayuda'] = df1['Ayuda'].apply(lambda x: necesidadMap(x))
+    
+    #adapt the variable use in Carto according to the first round dictionary
+    def aid_value_Carto(value):
+        if value == "Alimentación o kit de alimentación":
+            return 1
+        elif value == "Alojamiento temporal":
+            return 2
+        elif value == "Salud, primeros auxilios o atención médica":
+            return 3
+        elif value == "Agua":
+            return 4
+        elif value == "Duchas o baños":
+            return 5
+        elif value == "Kit de aseo o elementos de higiene":
+            return 6
+        elif value == "Asistencia legal":
+            return 7
+        elif value == "Ayuda psicológica":
+            return 8
+        elif value == "Dinero en efectivo":
+            return 9
+        elif value == "Transporte humanitario":
+            return 10
+        elif value == "Otra":
+            return 11
+        elif value == "Educación o espacios educativos":
+            return 12
+        elif value == "Espacios seguros para adultos":
+            return 13
+        else:
+            return value
+        
+    df1['m12'] = df1['Ayuda'].apply(aid_value_Carto)
+
+
 
     # use dictionary for access, satisfaction and recomendation
 
@@ -360,7 +394,6 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     df2 = df.explode(['Ayuda_NNA', 'Acceso_NNA',
                      'Satisfaccion_NNA', 'Recomendacion_NNA'])
 
-    df2['m18_1'] = df2['Ayuda_NNA']
     df2['m19'] = df2['Acceso_NNA']
     df2['m20'] = df2['Satisfaccion_NNA']
 
@@ -392,7 +425,32 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return value
 
     df2['Ayuda_NNA'] = df2['Ayuda_NNA'].apply(lambda x: necesidadMap(x))
-
+    
+        #adapt the variable use in Carto according to the first round dictionary
+    def aidNNA_value_Carto(value):
+        if value == "Alimentación o kit de alimentación":
+            return 1
+        elif value == "Alojamiento temporal":
+            return 2
+        elif value == "Duchas o baños":
+            return 3
+        elif value == "Agua":
+            return 4
+        elif value == "Kit de aseo o elementos de higiene":
+            return 5
+        elif value == "Ayuda psicológica":
+            return 6
+        elif value == "Educación o Espacios educativos y de cuidado para niños y niñas":
+            return 7
+        elif value == "Salud, primeros auxilios o atención médica":
+            return 8
+        elif value == "Otra":
+            return 9
+        else:
+            return value
+        
+    df2['m18_1'] = df2['Ayuda_NNA'].apply(aidNNA_value_Carto)
+    
     df2['Acceso_NNA'] = df2['Acceso_NNA'].apply(lambda x: accMap(x))
     df2['Satisfaccion_NNA'] = df2['Satisfaccion_NNA'].apply(
         lambda x: satMap(x))

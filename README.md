@@ -144,7 +144,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_feedback.py --cara_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - caracterización.csv" --ayuda_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - monitoreo.csv" --info_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - solicitudInformación.csv" --destination "C:\Users\maola\Desktop\Code"  --output "feedback, feedback_nna" --format csv
+python process_feedback.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --info_path path/to/file --output "~\feedback, ~\feedback_nna" --format csv
 ```
 
 The option available:
@@ -160,7 +160,7 @@ The option available:
 **Example:**
 
 ```Bash
-python process_feedback.py --cara_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - caracterización.csv" --ayuda_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - monitoreo.csv" --info_path "C:\Users\maola\Desktop\Code\Aurora v2.1 data file - solicitudInformación.csv" --destination "C:\Users\maola\Desktop\Code"  --output "feedback, feedback_nna" --format csv
+python process_feedback.py --cara_path "~\Aurora v2.1 data file - caracterización.csv" --ayuda_path "~\Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~\Aurora v2.1 data file - monitoreo.csv" --info_path "~\Aurora v2.1 data file - solicitudInformación.csv" -  --output "~\feedback, ~\feedback_nna" --format csv
 ```
 
 This script generates files needed in Carto (feedback) and the complete base with all variables

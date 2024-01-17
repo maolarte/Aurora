@@ -109,7 +109,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output ~/aurora_round_2_31102023 --format csv
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output ~/aurora_round_2 --format csv
 ```
 
 The option available:

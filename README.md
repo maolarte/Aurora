@@ -109,7 +109,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output ~/aurora_round_2_31102023 --format csv
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output path/to/file --format csv
 ```
 
 The option available:
@@ -125,6 +125,39 @@ The option available:
 
 ```Bash
 python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output aurora_monitoring_around_2 --format csv
+```
+
+### `process_feedback.py`
+
+The steps are:
+
+1. Make sure the required packages are install.
+2. Retrieve data from google drive folder. The google sheet document named: `Aurora v2.1 data file`. Export the required sheets which include:
+
+   - **caracterización** export in csv as `Aurora v2.1 data file - caracterización.csv`
+   - **ayudaHumanitaria** export in csv as `Aurora v2.1 data file - ayudaHumanitaria.csv`
+   - **monitoreo** export in csv as `Aurora v2.1 data file - monitoreo.csv`
+
+3. Run the script in your terminal. The following option are available:
+
+```Bash
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output path/to/file --format csv
+```
+
+The option available:
+
+- **--cara_path:** File location path for Aurora Characterization data in csv format
+- **--ayuda_path:** File location path for Aurora Feedback data in csv format
+- **--mon_path:** File location path for Aurora Monitoring data in csv format
+- **--info_path:** File location path for Aurora Monitoring data in csv format
+- **--destination:** Carto data warehouse endpoint
+- **--outputs:** Output name or output path
+- **--format:** Output format if output path is given. Can either be `csv` or `json`.
+
+**Example:**
+
+```Bash
+python process_feedback.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --info_path "~/Aurora v2.1 data file - solicitudInformación.csv" --output feedback,feedback_nna --format csv
 ```
 
 ### How to load data to Carto Data Warehouse

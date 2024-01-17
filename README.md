@@ -57,7 +57,7 @@ The options available:
 **Example:**
 
 ```Bash
-python process_services.py ~/Caracterización_de_punto_de_servicio_-_Aurora_Office_-_Ronda_2_-_all_versions_-_False_-_2023-11-28-13-59-47.csv --output ~/services_round_2 --format csv
+python process_services.py ~/Caracterización_de_punto_de_servicio_-_Aurora_Office_-_Ronda_2_-_all_versions_-_False_-_2023-11-28-13-59-47.csv --output ~/output --format csv
 ```
 
 ### `process_aurora`
@@ -124,7 +124,7 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output aurora_monitoring_around_2 --format csv
+python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output "Carto_map" --format csv
 ```
 
 ## `process_feedback`

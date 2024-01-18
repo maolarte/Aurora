@@ -10,6 +10,7 @@ import os
 from argparse import ArgumentParser
 from datetime import datetime
 
+defaultMissingValue = 999999
 
 def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str, destinations: str = "", output_paths: str = "", output_format: str = "csv"):
 
@@ -344,6 +345,9 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     df1['Acceso'] = df1['Acceso'].apply(lambda x: accMap(x))
     df1['Satisfaccion'] = df1['Satisfaccion'].apply(lambda x: satMap(x))
 
+    # filling missing values
+    df1 = df1.fillna(defaultMissingValue)
+
     feedback_output_path = output_paths.split(",")[0]
 
     if (feedback_output_path):
@@ -454,6 +458,9 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     df2['Acceso_NNA'] = df2['Acceso_NNA'].apply(lambda x: accMap(x))
     df2['Satisfaccion_NNA'] = df2['Satisfaccion_NNA'].apply(
         lambda x: satMap(x))
+    
+    # filling missing values
+    df2 = df2.fillna(defaultMissingValue)
 
     feedback_nna_output_path = output_paths.split(",")[-1]
 

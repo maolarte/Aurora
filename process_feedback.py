@@ -25,6 +25,12 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         filepath_or_buffer=monitoreo_path)
     aurora_info = read_csv(
         filepath_or_buffer=info_path)
+    
+    # Dropping duplicates of monitorings (same answers differents days)
+    columns_to_consider = [col for col in aurora_monitoreos.columns if col not in ['Inicio interacción', 'InteraID']]
+
+    # Use drop_duplicates with the specified columns to consider
+    aurora_monitoreos = aurora_monitoreos.drop_duplicates(subset=columns_to_consider)
 
     # Merge tables of first connection
     aurora1 = merge(aurora_cara, aurora_feedback)
@@ -78,13 +84,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     longitude_test = aurora_comple['Longitud'].fillna(999999).astype(str).str.replace(
         "-", "").str.replace(".", "").str.isnumeric()
     aurora_comple = aurora_comple[latitude_test & longitude_test]
-    # Dropping duplicates of monitorings (same answers differents days)
-    columns_to_consider = [col for col in aurora_comple.columns if col not in [
-        'Inicio interacción', 'InteraID']]
-
-    # Use drop_duplicates with the specified columns to consider
-    aurora_comple = aurora_comple.drop_duplicates(subset=columns_to_consider)
-
+   
+    # sort by id and date of interaction
     aurora_comple = aurora_comple.sort_values(
         by=['UserId', 'Inicio interacción'])
 

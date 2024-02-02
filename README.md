@@ -124,10 +124,10 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output "Carto_map" --format csv
+python process_monitoreos.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output "Carto_map" --format csv
 ```
 
-## `process_feedback.py`
+## `process_feedback`
 
 The first part of this script is similar to "process_monitoreos"; however, while process_monitoreos was thinking to generate the structure of geographical variables for Caro map, this script is focus on the generation of a complete data base and the necessary transformations for feedback pages in Carto.
 
@@ -144,7 +144,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_feedback.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --info_path path/to/file --output "~\feedback, ~\feedback_nna" --format csv
+python process_feedback.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --info_path path/to/file --output "path/to/file, path/to/file" --format csv
 ```
 
 The option available:
@@ -190,6 +190,17 @@ You can also upload the data directly to carto data warehouse. You can use `--de
 ```Bash
 python process_service.py ~/raw_data.csv --destination carto-dw-ac-4v8fnfsh.shared.test
 ```
+
+## Data Sources
+
+For a breakdown of datasource see dashboard doc: [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md).
+
+For script specific sources:
+
+- [`process_services`](#process_services) - [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md#services_round_2_18102023)
+- [`process_aurora`](#process_aurora) - [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md#aurora_round_2)
+- [`process_monitoreos`](#process_monitoreos) - [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md#aurora_round_2_31102023)
+- [`process_feedback`](#process_feedback) - [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md#feedback_round_2), [Carto Dashboard Doc Link](https://github.com/Auh3b/immap-migration-dashboard/blob/main/docs/sources.md#feedback_nna_round_2)
 
 ## Other Documentation
 

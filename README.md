@@ -109,7 +109,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output ~/aurora_round_2 --format csv
+python process_monitoreos.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --output path/to/file --format csv
 ```
 
 The option available:
@@ -124,12 +124,13 @@ The option available:
 **Example:**
 
 ```Bash
-python process_aurora.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output "Carto_map" --format csv
+python process_monitoreos.py --cara_path "~/Aurora v2.1 data file - caracterización.csv" --ayuda_path "~/Aurora v2.1 data file - ayudaHumanitaria.csv" --mon_path "~/Aurora v2.1 data file - monitoreo.csv" --output "Carto_map" --format csv
 ```
 
 ## `process_feedback`
 
-The first part of this script is similar to "process_monitoreos"; however, while process_monitoreos was thinking to generate the structure of geographical variables for Caro map, this script is focus on the generation of a complete data base and the necessary transformations for feedback pages in Carto.  
+The first part of this script is similar to "process_monitoreos"; however, while process_monitoreos was thinking to generate the structure of geographical variables for Caro map, this script is focus on the generation of a complete data base and the necessary transformations for feedback pages in Carto ("Feedback Servicios").
+This script also generate the panel data base (Excel file called "completa")  
 
 The steps are:
 
@@ -144,7 +145,7 @@ The steps are:
 3. Run the script in your terminal. The following option are available:
 
 ```Bash
-python process_feedback.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --info_path path/to/file --output "~\feedback, ~\feedback_nna" --format csv
+python process_feedback.py --cara_path path/to/file --ayuda_path path/to/file --mon_path path/to/file --info_path path/to/file --output path/to/file --format csv
 ```
 
 The option available:

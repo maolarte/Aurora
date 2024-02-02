@@ -51,10 +51,10 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
    # Variable of date in date format (for generating panel data)
     aurora_comple["fecha"] = pd.to_datetime(
         aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
-   
-   #Variable of date in date format (for generating panel data)
+
+   # Variable of date in date format (for generating panel data)
     aurora_comple["fecha"] = pd.to_datetime(
-    aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
+        aurora_comple["Inicio interacción"],  errors='coerce', utc=True, infer_datetime_format=True).dt.strftime('%Y-%m-%d')
 
     # fixing the format of nov 5th 2023 (monitorings) is different fron the rest of days
     aurora_comple.loc[aurora_comple['fecha'] ==
@@ -143,7 +143,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     MAPBOX_TOKEN = os.environ.get("MAPBOX_TOKEN")
     # This is heavy process that takes a while to finish
     # should be used sparingly and closer to end processes.
-    aurora_comple['objectid']=aurora_comple['UserId']
+    aurora_comple['objectid'] = aurora_comple['UserId']
     aurora_comple = addReverseGeocodedToDataFrame(
         df=aurora_comple, token=MAPBOX_TOKEN, lat_column="latitude", lon_column="longitude", name="Auora")
 
@@ -187,7 +187,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
     aurora_comple.loc[aurora_comple['UserId']
                       == 319708059, 'country_name'] = "Chile"
 
-    excel_file = 'completa.xlsx'  
+    excel_file = 'completa.xlsx'
     aurora_comple.to_excel(excel_file, index=False)
 
 # Dataset of general feedback
@@ -261,7 +261,7 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
         12: "Transporte humanitario",
         13: "Otra"
     }
-    
+
     def necesidadMap(value):
         try:
 
@@ -273,8 +273,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return value
 
     df1['Ayuda'] = df1['Ayuda'].apply(lambda x: necesidadMap(x))
-    
-    #adapt the variable use in Carto according to the first round dictionary
+
+    # adapt the variable use in Carto according to the first round dictionary
     def aid_value_Carto(value):
         if value == "Alimentación o kit de alimentación":
             return 1
@@ -304,10 +304,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return 13
         else:
             return value
-        
+
     df1['m12'] = df1['Ayuda'].apply(aid_value_Carto)
-
-
 
     # use dictionary for access, satisfaction and recomendation
 
@@ -430,8 +428,8 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return value
 
     df2['Ayuda_NNA'] = df2['Ayuda_NNA'].apply(lambda x: necesidadMap(x))
-    
-        #adapt the variable use in Carto according to the first round dictionary
+
+    # adapt the variable use in Carto according to the first round dictionary
     def aidNNA_value_Carto(value):
         if value == "Alimentación o kit de alimentación":
             return 1
@@ -453,9 +451,9 @@ def main(cara_path: str, feedback_path: str, monitoreo_path: str, info_path: str
             return 9
         else:
             return value
-        
+
     df2['m18_1'] = df2['Ayuda_NNA'].apply(aidNNA_value_Carto)
-    
+
     df2['Acceso_NNA'] = df2['Acceso_NNA'].apply(lambda x: accMap(x))
     df2['Satisfaccion_NNA'] = df2['Satisfaccion_NNA'].apply(
         lambda x: satMap(x))

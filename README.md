@@ -206,3 +206,11 @@ For script specific sources:
 
 - [`Modules`](/modules/README.md): Directory of custom functions which are used in scripts.
 - [`Defaults`](/defaults/README.md): Directory of JSON objects of constant values that which are used in scripts.
+
+## Deprecated Scripts
+
+Scripts that are no longer in active development:
+
+### `process_meltwater`
+
+This scripted returned a dataset of which the raw dataa had been retrieved from [Meltwater API](https://developer.meltwater.com/docs/meltwater-api/). This script was run to aggregate the data to a manageble size while perserving desired indicators types. The process dataset was used in [Redes sociales](https://github.com/Auh3b/immap-migration-dashboard/blob/main/src/components/views/Media.tsx). Access to the raw data is no longer available. Last update was `29/10/2023`. As such active development of this script was seized.

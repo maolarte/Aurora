@@ -213,4 +213,4 @@ Scripts that are no longer in active development:
 
 ### `process_meltwater`
 
-This scripted returned a dataset of which the raw dataa had been retrieved from [Meltwater API](https://developer.meltwater.com/docs/meltwater-api/). This script was run to aggregate the data to a manageble size while perserving desired indicators types. The process dataset was used in [Redes sociales](https://github.com/Auh3b/immap-migration-dashboard/blob/main/src/components/views/Media.tsx). Access to the raw data is no longer available. Last update was `29/10/2023`. As such active development of this script was seized.
+This script returned a dataset of which the raw dataa had been retrieved from [Meltwater API](https://developer.meltwater.com/docs/meltwater-api/). This script was run to aggregate the data to a manageble size while perserving desired indicators types. The process dataset was used in [Redes sociales](https://github.com/Auh3b/immap-migration-dashboard/blob/main/src/components/views/Media.tsx) page in carto dashboard. Access to the raw data is no longer available. Last update was `29/10/2023`. As such active development of this script was seized.
